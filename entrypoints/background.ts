@@ -69,8 +69,25 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener(async (message: {
     type: string;
+    url?: string;
     emojis?: Array<{ src: string; alt: string }>;
   }) => {
+    // 图片代理：background 通过 host_permissions 跨域 fetch，转 data URL 返回
+    if (message.type === 'PROXY_IMAGE' && message.url) {
+      try {
+        const response = await fetch(message.url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const blob = await response.blob();
+        const dataUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(blob);
+        });
+        return { dataUrl };
+      } catch (err) {
+        return { error: String(err) };
+      }
+    }
     // 单个下载
     if (message.type === 'DOWNLOAD_SINGLE' && message.emojis?.[0]) {
       const emoji = message.emojis[0];

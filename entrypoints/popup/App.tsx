@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 
 interface EmojiInfo {
@@ -15,10 +15,12 @@ type Status = 'idle' | 'scanning' | 'done' | 'error';
 function App() {
   const { t } = useI18n();
   const [emojis, setEmojis] = useState<EmojiInfo[]>([]);
+  const [proxiedUrls, setProxiedUrls] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [downloading, setDownloading] = useState(false);
+  const proxiedRef = useRef<Set<string>>(new Set());
 
   const getCurrentTab = useCallback(async () => {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
@@ -56,6 +58,43 @@ function App() {
   }, [getCurrentTab, t]);
 
   useEffect(() => { handleScan(); }, [handleScan]);
+
+  // 通过 background 代理图片：解决跨域无法显示 webp 的问题
+  useEffect(() => {
+    if (emojis.length === 0) return;
+    let cancelled = false;
+
+    const urlsToProxy = emojis
+      .map((e) => e.src)
+      .filter((src) => !proxiedRef.current.has(src));
+
+    if (urlsToProxy.length === 0) return;
+
+    Promise.all(
+      urlsToProxy.map(async (src) => {
+        try {
+          const result = await browser.runtime.sendMessage({ type: 'PROXY_IMAGE', url: src });
+          if (result?.dataUrl) {
+            proxiedRef.current.add(src);
+            return { src, dataUrl: result.dataUrl };
+          }
+        } catch { /* ignore */ }
+        return null;
+      }),
+    ).then((results) => {
+      if (cancelled) return;
+      const entries = results.filter(Boolean) as Array<{ src: string; dataUrl: string }>;
+      if (entries.length > 0) {
+        setProxiedUrls((prev) => {
+          const next = { ...prev };
+          for (const e of entries) next[e.src] = e.dataUrl;
+          return next;
+        });
+      }
+    });
+
+    return () => { cancelled = true; };
+  }, [emojis]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -221,7 +260,7 @@ function App() {
 
               {/* Image */}
               <img
-                src={emoji.src}
+                src={proxiedUrls[emoji.src] || emoji.src}
                 alt={emoji.alt}
                 loading="lazy"
                 className={`block pointer-events-none ${
