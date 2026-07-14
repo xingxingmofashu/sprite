@@ -31,7 +31,6 @@ export default defineBackground(() => {
 
   // ============ Side panel ============
 
-  // Open side panel when the extension icon is clicked (no default_popup)
   browser.action.onClicked.addListener(async (tab) => {
     await browser.sidePanel.open({ windowId: tab.windowId });
   });
@@ -44,7 +43,7 @@ export default defineBackground(() => {
     emojis?: Array<{ src: string; alt: string }>;
   }) => {
     // PROXY_IMAGE: background fetches the image (using host_permissions to bypass CORS)
-    // and returns it as a base64 data URL for the popup to display.
+    // and returns it as a base64 data URL for the side panel to display.
     if (message.type === 'PROXY_IMAGE' && message.url) {
       try {
         const response = await fetch(message.url);
@@ -93,37 +92,51 @@ export default defineBackground(() => {
         const { default: JSZip } = await import('jszip');
         const zip = new JSZip();
         const folder = zip.folder('emojis');
+        if (!folder) throw new Error('Failed to create folder inside ZIP');
 
-        let successCount = 0;
-        let failCount = 0;
+        // Fetch images concurrently with throttledMap
+        const results = await throttledMap(
+          message.emojis.entries(),
+          async ([i, emoji]) => {
+            try {
+              const response = await fetch(emoji.src);
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        for (let i = 0; i < message.emojis.length; i++) {
-          const emoji = message.emojis[i];
-          try {
-            const response = await fetch(emoji.src);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              const blob = await response.blob();
+              const ext = getExtension(emoji.src);
+              const name = getNameFromUrl(emoji.src);
+              folder.file(`${i + 1}_${name}.${ext}`, blob);
+              return 'ok' as const;
+            } catch (err) {
+              console.error(`Failed to fetch: ${emoji.src}`, err);
+              return 'fail' as const;
+            }
+          },
+          5, // concurrency
+        );
 
-            const blob = await response.blob();
-            const ext = getExtension(emoji.src);
-            const name = getNameFromUrl(emoji.src);
-            const filename = `${i + 1}_${name}.${ext}`;
+        const successCount = results.filter((r) => r === 'ok').length;
+        const failCount = results.filter((r) => r === 'fail').length;
 
-            folder?.file(filename, blob);
-            successCount++;
-          } catch (err) {
-            console.error(`Failed to fetch: ${emoji.src}`, err);
-            failCount++;
-          }
+        // Generate download URL — prefer blob URL, fall back to data URL
+        let downloadUrl: string;
+        try {
+          const blob = await zip.generateAsync({ type: 'blob' });
+          downloadUrl = URL.createObjectURL(blob);
+        } catch {
+          // Fallback for environments where createObjectURL isn't available
+          const base64 = await zip.generateAsync({ type: 'base64' });
+          downloadUrl = `data:application/zip;base64,${base64}`;
         }
 
-        const base64 = await zip.generateAsync({ type: 'base64' });
-
+        const suffix = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         await browser.downloads.download({
-          url: `data:application/zip;base64,${base64}`,
-          filename: `douyin-emojis/emoji-pack_${Date.now()}.zip`,
+          url: downloadUrl,
+          filename: `douyin-emojis/emoji-pack_${suffix}.zip`,
           saveAs: true,
         });
 
+        if (downloadUrl.startsWith('blob:')) URL.revokeObjectURL(downloadUrl);
         return { success: true, count: successCount, failCount };
       } catch (err) {
         console.error('ZIP pack failed:', err);

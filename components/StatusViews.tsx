@@ -32,7 +32,7 @@ export function ErrorView({ message, onRetry }: ErrorViewProps) {
 
   return (
     <div className="w-[440px] min-h-[300px] flex flex-col bg-background select-none">
-      <PopupHeader total={0} emojiCount={0} stickerCount={0} />
+      <SidePanelHeader total={0} emojiCount={0} stickerCount={0} />
       <div className="flex-1 flex flex-col items-center justify-center gap-2 px-5 py-8 text-center">
         <p className="text-4xl m-0">⚠️</p>
         <p className="text-sm text-destructive whitespace-pre-line leading-relaxed max-w-[360px]">{message}</p>
@@ -50,7 +50,7 @@ export function EmptyView({ onRetry }: EmptyViewProps) {
 
   return (
     <div className="w-[440px] min-h-[300px] flex flex-col bg-background select-none">
-      <PopupHeader total={0} emojiCount={0} stickerCount={0} />
+      <SidePanelHeader total={0} emojiCount={0} stickerCount={0} />
       <div className="flex-1 flex flex-col items-center justify-center gap-1 px-5 py-8 text-center">
         <p className="text-4xl m-0">😅</p>
         <p className="text-sm text-muted-foreground">{t('noEmojisFound')}</p>

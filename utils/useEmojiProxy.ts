@@ -1,39 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import type { EmojiInfo } from '@/utils/types';
+import { throttledMap } from '@/utils/async';
 
 /** Maximum concurrent PROXY_IMAGE requests to background */
 const PROXY_CONCURRENCY = 5;
-
-/**
- * Run async tasks with a concurrency limit.
- * Resolves in insertion order.
- */
-async function throttledMap<T, R>(
-  items: T[],
-  fn: (item: T) => Promise<R>,
-  limit: number,
-): Promise<R[]> {
-  const results: R[] = [];
-  const queue = [...items.entries()];
-  const runners: Promise<void>[] = [];
-
-  const worker = async () => {
-    while (queue.length > 0) {
-      const [index, item] = queue.shift()!;
-      try {
-        results[index] = await fn(item);
-      } catch {
-        results[index] = null as unknown as R;
-      }
-    }
-  };
-
-  for (let i = 0; i < Math.min(limit, items.length); i++) {
-    runners.push(worker());
-  }
-  await Promise.all(runners);
-  return results;
-}
 
 /**
  * Proxy emoji images through the background service worker to bypass

@@ -13,7 +13,7 @@ import { useCallback } from 'react';
 export function useI18n() {
   const t = useCallback(
     (key: string, substitutions?: string | string[]): string => {
-      return (browser.i18n.getMessage as (key: string, substitutions?: string | string[]) => string)(key, substitutions) ?? key;
+      return (browser.i18n.getMessage as (...args: unknown[]) => string)(key, substitutions) ?? key;
     },
     [],
   );

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/utils/cn';
 
-interface PopupToolbarProps {
+interface SidePanelToolbarProps {
   total: number;
   selectedCount: number;
   allSelected: boolean;
@@ -13,7 +13,7 @@ interface PopupToolbarProps {
 }
 
 /** Toolbar: select-all, count, and action buttons */
-export function PopupToolbar({
+export function SidePanelToolbar({
   total,
   selectedCount,
   allSelected,
@@ -21,7 +21,7 @@ export function PopupToolbar({
   onSelectAll,
   onRescan,
   onDownloadZip,
-}: PopupToolbarProps) {
+}: SidePanelToolbarProps) {
   const { t } = useI18n();
 
   return (

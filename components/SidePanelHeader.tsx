@@ -1,13 +1,11 @@
-import { Button } from '@/components/ui/button';
-
-interface PopupHeaderProps {
+interface SidePanelHeaderProps {
   total: number;
   emojiCount: number;
   stickerCount: number;
 }
 
 /** Header bar with title and stats */
-export function PopupHeader({ total, emojiCount, stickerCount }: PopupHeaderProps) {
+export function SidePanelHeader({ total, emojiCount, stickerCount }: SidePanelHeaderProps) {
   const { t } = useI18n();
 
   return (
