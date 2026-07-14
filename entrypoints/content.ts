@@ -1,7 +1,7 @@
 import type { EmojiInfo, ScanResponse } from '@/utils/types';
 
 /** Douyin CDN domain regex */
-const CDN_PATTERN = /douyincdn|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/;
+const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/;
 
 // ============ Scan ============
 

@@ -15,6 +15,7 @@ export default defineConfig({
     host_permissions: [
       '*://*.douyin.com/*',
       '*://*.douyincdn.com/*',
+      '*://*.douyinpic.com/*',
       '*://*.pstatp.com/*',
       '*://*.bytecdn.cn/*',
       '*://*.byteimg.com/*',
