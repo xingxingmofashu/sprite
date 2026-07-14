@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { EmojiInfo } from '@/utils/types';
 import { useEmojiProxy } from '@/utils/useEmojiProxy';
+import { cn } from '@/utils/cn';
 import './App.css';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
@@ -94,27 +95,23 @@ function App() {
     setDownloading(false);
   };
 
-  // ======== Loading ========
   if (status === 'scanning') {
     return <LoadingView onRetry={handleScan} />;
   }
 
-  // ======== Error ========
   if (status === 'error') {
     return <ErrorView message={errorMsg} onRetry={handleScan} />;
   }
 
-  // ======== Empty ========
   if (emojis.length === 0) {
     return <EmptyView onRetry={handleScan} />;
   }
 
-  // ======== Grid ========
   const stickerCount = emojis.filter((e) => e.type === 'sticker').length;
   const emojiCount = emojis.filter((e) => e.type === 'emoji').length;
 
   return (
-    <div className="w-[440px] min-h-[300px] max-h-[560px] flex flex-col bg-white select-none">
+    <div className="w-[440px] min-h-[300px] max-h-[560px] flex flex-col bg-background select-none">
       <PopupHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} />
       <PopupToolbar
         total={emojis.length}
@@ -143,8 +140,8 @@ function App() {
       </div>
 
       {/* Footer */}
-      <div className="flex-shrink-0 px-4 py-2 border-t border-gray-100 text-center">
-        <p className="text-[11px] text-gray-300">{t('rightClickHint')}</p>
+      <div className="flex-shrink-0 px-4 py-2 border-t border-border text-center">
+        <p className="text-[11px] text-muted-foreground/50">{t('rightClickHint')}</p>
       </div>
     </div>
   );

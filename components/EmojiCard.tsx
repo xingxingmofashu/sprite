@@ -1,3 +1,6 @@
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/utils/cn';
 import type { EmojiInfo } from '@/utils/types';
 
 interface EmojiCardProps {
@@ -14,19 +17,19 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
   return (
     <div
       onClick={() => onToggle(emoji.id)}
-      className={`emoji-card relative flex items-center justify-center aspect-square rounded-xl border-2 overflow-hidden cursor-pointer transition-all ${
+      className={cn(
+        'emoji-card relative flex items-center justify-center aspect-square rounded-xl border-2 overflow-hidden cursor-pointer transition-colors',
         selected
           ? 'border-[#fe2c55] bg-[#fef0f3]'
-          : 'border-transparent bg-gray-50 hover:border-[#fe2c55] hover:bg-[#fef0f3]'
-      }`}
+          : 'border-transparent bg-muted hover:border-[#fe2c55] hover:bg-[#fef0f3]',
+      )}
     >
       {/* Checkbox */}
       <div className="absolute top-1 left-1 z-10">
-        <input
-          type="checkbox"
-          className="accent-[#fe2c55] w-3.5 h-3.5 cursor-pointer"
+        <Checkbox
           checked={selected}
-          onChange={() => onToggle(emoji.id)}
+          onCheckedChange={() => onToggle(emoji.id)}
+          className="size-3.5"
         />
       </div>
 
@@ -35,9 +38,10 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
         src={proxiedUrl || emoji.src}
         alt={emoji.alt}
         loading="lazy"
-        className={`block pointer-events-none ${
-          emoji.type === 'sticker' ? 'max-w-[90%] max-h-[90%]' : 'max-w-[80%] max-h-[80%]'
-        } object-contain`}
+        className={cn(
+          'block pointer-events-none object-contain',
+          emoji.type === 'sticker' ? 'max-w-[90%] max-h-[90%]' : 'max-w-[80%] max-h-[80%]',
+        )}
       />
 
       {/* Download button overlay */}
@@ -53,9 +57,9 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
       </button>
 
       {/* Type badge */}
-      <span className="emoji-badge text-white">
+      <Badge variant="secondary" className="emoji-badge text-[10px] px-1.5 py-0.5 leading-tight font-medium">
         {emoji.type === 'sticker' ? t('badgeSticker') : t('badgeEmoji')}
-      </span>
+      </Badge>
     </div>
   );
 }
