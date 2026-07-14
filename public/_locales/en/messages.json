@@ -35,9 +35,15 @@
   "totalEmojis": {
     "message": "Total $1 ($2 emoji · $3 sticker)",
     "placeholders": {
-      "count": { "content": "$1" },
-      "emojiCount": { "content": "$2" },
-      "stickerCount": { "content": "$3" }
+      "count": {
+        "content": "$1"
+      },
+      "emojiCount": {
+        "content": "$2"
+      },
+      "stickerCount": {
+        "content": "$3"
+      }
     }
   },
   "selectAll": {
@@ -46,7 +52,9 @@
   "selected": {
     "message": "Selected $1",
     "placeholders": {
-      "count": { "content": "$1" }
+      "count": {
+        "content": "$1"
+      }
     }
   },
   "rescan": {
@@ -57,12 +65,6 @@
   },
   "packing": {
     "message": "Packing..."
-  },
-  "badgeEmoji": {
-    "message": "emoji"
-  },
-  "badgeSticker": {
-    "message": "sticker"
   },
   "downloadTooltip": {
     "message": "Download this emoji"
