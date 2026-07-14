@@ -16,8 +16,9 @@ function setupNetworkMonitor(): void {
   // 1) Capture already-loaded resources
   try {
     for (const entry of performance.getEntriesByType('resource')) {
-      if (entry.initiatorType === 'img' && CDN_PATTERN.test(entry.name)) {
-        networkUrls.add(entry.name);
+      const resource = entry as PerformanceResourceTiming;
+      if (resource.initiatorType === 'img' && CDN_PATTERN.test(resource.name)) {
+        networkUrls.add(resource.name);
       }
     }
   } catch { /* performance API not available */ }
@@ -26,8 +27,9 @@ function setupNetworkMonitor(): void {
   try {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (CDN_PATTERN.test(entry.name)) {
-          networkUrls.add(entry.name);
+        const resource = entry as PerformanceResourceTiming;
+        if (CDN_PATTERN.test(resource.name)) {
+          networkUrls.add(resource.name);
         }
       }
     });
