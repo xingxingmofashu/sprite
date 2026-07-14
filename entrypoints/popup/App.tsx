@@ -223,7 +223,6 @@ function App() {
               <img
                 src={emoji.src}
                 alt={emoji.alt}
-                crossOrigin="anonymous"
                 loading="lazy"
                 className={`block pointer-events-none ${
                   emoji.type === 'sticker' ? 'max-w-[90%] max-h-[90%]' : 'max-w-[80%] max-h-[80%]'

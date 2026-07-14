@@ -31,8 +31,12 @@ function scanForEmojis(): EmojiInfo[] {
     if (src.startsWith('data:')) return;
     if (width === 0 && height === 0) return;
 
+    // 过滤掉头像、个人资料图片
+    const avatarPattern = /avatar|head.?img|profile|circle.?head/i;
+    if (avatarPattern.test(src) || avatarPattern.test(alt)) return;
+
     // 抖音 CDN 域名检测
-    const isDouyinCDN = /douyincdn|pstatp|bytecdn|toutiaoimg|ixiguavideo/.test(src);
+    const isDouyinCDN = /douyincdn|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/.test(src);
 
     // 类名检测
     const emojiClassPattern = /emoji|sticker|face|biaoqing|表情|sticker_img/i;

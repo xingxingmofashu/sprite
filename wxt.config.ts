@@ -17,6 +17,7 @@ export default defineConfig({
       '*://*.douyincdn.com/*',
       '*://*.pstatp.com/*',
       '*://*.bytecdn.cn/*',
+      '*://*.byteimg.com/*',
       '*://*.toutiaoimg.com/*',
     ],
   },
