@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Maximize2 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 interface PopupToolbarProps {
@@ -11,7 +10,6 @@ interface PopupToolbarProps {
   onSelectAll: () => void;
   onRescan: () => void;
   onDownloadZip: () => void;
-  onFullscreen: () => void;
 }
 
 /** Toolbar: select-all, count, and action buttons */
@@ -23,7 +21,6 @@ export function PopupToolbar({
   onSelectAll,
   onRescan,
   onDownloadZip,
-  onFullscreen,
 }: PopupToolbarProps) {
   const { t } = useI18n();
 
@@ -39,9 +36,6 @@ export function PopupToolbar({
       </span>
 
       <div className="ml-auto flex gap-1.5">
-        <Button variant="ghost" size="icon" onClick={onFullscreen} title={t('fullscreen')}>
-          <Maximize2 className="size-3.5" />
-        </Button>
         <Button variant="secondary" size="sm" onClick={onRescan}>
           {t('rescan')}
         </Button>

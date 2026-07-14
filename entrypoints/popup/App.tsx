@@ -127,7 +127,7 @@ function App() {
           : 'w-[440px] min-h-[300px] max-h-[560px]',
       )}
     >
-      <PopupHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} />
+      <PopupHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} onFullscreen={handleFullscreen} />
       <PopupToolbar
         total={emojis.length}
         selectedCount={selectedIds.size}
@@ -136,7 +136,6 @@ function App() {
         onSelectAll={toggleSelectAll}
         onRescan={handleScan}
         onDownloadZip={downloadSelected}
-        onFullscreen={handleFullscreen}
       />
 
       {/* Grid */}
