@@ -1,16 +1,43 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import type { EmojiInfo } from '@/utils/types';
 import './App.css';
 
-interface EmojiInfo {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  type: 'emoji' | 'sticker';
-  id: string;
-}
-
 type Status = 'idle' | 'scanning' | 'done' | 'error';
+
+/** Maximum concurrent PROXY_IMAGE requests to background */
+const PROXY_CONCURRENCY = 5;
+
+/**
+ * Run async tasks with a concurrency limit.
+ * Resolves when all tasks complete, in insertion order.
+ */
+async function throttledMap<T, R>(
+  items: T[],
+  fn: (item: T) => Promise<R>,
+  limit: number,
+): Promise<R[]> {
+  const results: R[] = [];
+  const queue = [...items.entries()];
+  const running: Promise<void>[] = [];
+
+  const next = async (): Promise<void> => {
+    while (queue.length > 0) {
+      const entry = queue.shift()!;
+      const [index, item] = entry;
+      try {
+        results[index] = await fn(item);
+      } catch {
+        results[index] = null as unknown as R;
+      }
+    }
+  };
+
+  for (let i = 0; i < Math.min(limit, items.length); i++) {
+    running.push(next());
+  }
+  await Promise.all(running);
+  return results;
+}
 
 function App() {
   const { t } = useI18n();
@@ -20,7 +47,12 @@ function App() {
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [downloading, setDownloading] = useState(false);
-  const proxiedRef = useRef<Set<string>>(new Set());
+  const proxiedRef = useRef<Set<string>>(null);
+
+  const getProxiedSet = (): Set<string> => {
+    if (!proxiedRef.current) proxiedRef.current = new Set();
+    return proxiedRef.current;
+  };
 
   const getCurrentTab = useCallback(async () => {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
@@ -59,29 +91,28 @@ function App() {
 
   useEffect(() => { handleScan(); }, [handleScan]);
 
-  // 通过 background 代理图片：解决跨域无法显示 webp 的问题
+  // 通过 background 代理图片：解决跨域无法显示的问题
   useEffect(() => {
     if (emojis.length === 0) return;
     let cancelled = false;
+    const proxied = getProxiedSet();
 
     const urlsToProxy = emojis
       .map((e) => e.src)
-      .filter((src) => !proxiedRef.current.has(src));
+      .filter((src) => !proxied.has(src));
 
     if (urlsToProxy.length === 0) return;
 
-    Promise.all(
-      urlsToProxy.map(async (src) => {
-        try {
-          const result = await browser.runtime.sendMessage({ type: 'PROXY_IMAGE', url: src });
-          if (result?.dataUrl) {
-            proxiedRef.current.add(src);
-            return { src, dataUrl: result.dataUrl };
-          }
-        } catch { /* ignore */ }
-        return null;
-      }),
-    ).then((results) => {
+    throttledMap(urlsToProxy, async (src) => {
+      try {
+        const result = await browser.runtime.sendMessage({ type: 'PROXY_IMAGE', url: src });
+        if (result?.dataUrl) {
+          proxied.add(src);
+          return { src, dataUrl: result.dataUrl };
+        }
+      } catch { /* ignore */ }
+      return null;
+    }, PROXY_CONCURRENCY).then((results) => {
       if (cancelled) return;
       const entries = results.filter(Boolean) as Array<{ src: string; dataUrl: string }>;
       if (entries.length > 0) {

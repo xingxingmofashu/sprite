@@ -28,12 +28,8 @@ function getExtension(url: string): string {
   }
 }
 
-/**
- * 判断 URL 是否看起来像表情包图片
- */
-function isLikelyEmojiUrl(url: string): boolean {
-  return /douyincdn|pstatp|bytecdn|toutiaoimg|emoji|sticker|表情/.test(url);
-}
+/** 单个 PROXY_IMAGE 返回的最大 blob 字节数（～700KB，base64 后约 930KB，安全低于 Chrome 的 1MB 消息限制） */
+const MAX_PROXY_BLOB_SIZE = 700_000;
 
 export default defineBackground(() => {
   // ============ 右键菜单 ============
@@ -77,7 +73,18 @@ export default defineBackground(() => {
       try {
         const response = await fetch(message.url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        // 检查 Content-Length，跳过过大的图片
+        const contentLength = response.headers.get('Content-Length');
+        if (contentLength && Number(contentLength) > MAX_PROXY_BLOB_SIZE) {
+          return { error: `Image too large (${contentLength} bytes)` };
+        }
+
         const blob = await response.blob();
+        if (blob.size > MAX_PROXY_BLOB_SIZE) {
+          return { error: `Image too large (${blob.size} bytes)` };
+        }
+
         const dataUrl = await new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result as string);

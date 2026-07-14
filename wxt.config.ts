@@ -18,6 +18,7 @@ export default defineConfig({
       '*://*.pstatp.com/*',
       '*://*.bytecdn.cn/*',
       '*://*.byteimg.com/*',
+      '*://*.ixiguavideo.com/*',
       '*://*.toutiaoimg.com/*',
     ],
   },
