@@ -35,14 +35,22 @@ function setupNetworkMonitor(): void {
   } catch { /* PerformanceObserver not supported */ }
 }
 
-// ============ DOM scan (fallback) ============
+// ============ Scan ============
+
+/** Use the image URL as the stable identifier to guarantee unique React keys */
+function idFromUrl(url: string): string {
+  // Simple hash of the URL for a shorter, readable key
+  let hash = 0;
+  for (let i = 0; i < url.length; i++) {
+    hash = ((hash << 5) - hash + url.charCodeAt(i)) | 0;
+  }
+  return `e-${Math.abs(hash).toString(36)}`;
+}
 
 /** Scan DOM <img> elements for CDN-hosted images */
 function scanDom(): EmojiInfo[] {
-  let index = 0;
   const results: EmojiInfo[] = [];
   const seen = new Set<string>();
-
   const images = document.querySelectorAll('img');
 
   images.forEach((img) => {
@@ -64,7 +72,7 @@ function scanDom(): EmojiInfo[] {
         src.includes('.gif') || src.includes('sticker') || width > 150 || height > 150
           ? 'sticker'
           : 'emoji',
-      id: `emoji-${index++}`,
+      id: idFromUrl(src),
     });
   });
 
@@ -73,32 +81,21 @@ function scanDom(): EmojiInfo[] {
 
 // ============ Merge ============
 
-/** Merge DOM scan + network-monitored results */
+/** Merge DOM scan + network-monitored results, deduped by URL */
 function scanForEmojis(): EmojiInfo[] {
-  const seen = new Set<string>();
-
-  const addIfNew = (src: string, alt: string, width: number, height: number, type: 'emoji' | 'sticker'): EmojiInfo | null => {
-    if (seen.has(src)) return null;
-    seen.add(src);
-    return {
-      src,
-      alt,
-      width,
-      height,
-      type,
-      id: `emoji-${seen.size - 1}`,
-    };
-  };
-
-  // DOM scan first — has dimensions + alt
   const domResults = scanDom();
 
   // Network-captured URLs — has URL but no dimensions
   const networkResults: EmojiInfo[] = [];
   for (const url of networkUrls) {
-    const type = url.includes('.gif') || url.includes('sticker') ? 'sticker' : 'emoji';
-    const entry = addIfNew(url, '', 0, 0, type);
-    if (entry) networkResults.push(entry);
+    networkResults.push({
+      src: url,
+      alt: '',
+      width: 0,
+      height: 0,
+      type: url.includes('.gif') || url.includes('sticker') ? 'sticker' : 'emoji',
+      id: idFromUrl(url),
+    });
   }
 
   // Merge: DOM first (richer data), then supplement with network-only URLs
@@ -114,7 +111,6 @@ function scanForEmojis(): EmojiInfo[] {
 export default defineContentScript({
   matches: ['*://*.douyin.com/*'],
   main() {
-    // Start network monitoring — captures images as they load (like DevTools Network)
     setupNetworkMonitor();
 
     browser.runtime.onMessage.addListener((message: { type: string }, _sender) => {
