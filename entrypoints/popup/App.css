@@ -1,0 +1,51 @@
+/* 表情包网格 */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* 下载按钮 hover 显示 */
+.download-btn-overlay {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.emoji-card:hover .download-btn-overlay {
+  opacity: 1;
+}
+
+/* 类型徽章 */
+.emoji-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* 加载动画 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #fe2c55;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
