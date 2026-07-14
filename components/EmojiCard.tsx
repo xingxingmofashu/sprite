@@ -20,8 +20,8 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
       className={cn(
         'group relative flex items-center justify-center aspect-square rounded-xl border-2 overflow-hidden cursor-pointer transition-colors',
         selected
-          ? 'border-[#fe2c55] bg-[#fef0f3]'
-          : 'border-transparent bg-muted hover:border-[#fe2c55] hover:bg-[#fef0f3]',
+          ? 'border-primary bg-primary/5'
+          : 'border-transparent bg-muted hover:border-primary/50 hover:bg-primary/5',
       )}
     >
       {/* Checkbox */}

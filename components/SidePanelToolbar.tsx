@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/utils/cn';
 
 interface SidePanelToolbarProps {
   total: number;
@@ -43,10 +42,7 @@ export function SidePanelToolbar({
           size="sm"
           onClick={onDownloadZip}
           disabled={selectedCount === 0 || downloading}
-          className={cn(
-            'bg-[#fe2c55] hover:bg-[#e0143f] disabled:opacity-50',
-            !downloading && selectedCount > 0 && 'text-white',
-          )}
+          className="disabled:opacity-50"
         >
           {downloading ? t('packing') : t('downloadZip')}
         </Button>
