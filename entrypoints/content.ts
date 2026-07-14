@@ -3,45 +3,10 @@ import type { EmojiInfo, ScanResponse } from '@/utils/types';
 /** Douyin CDN domain regex */
 const CDN_PATTERN = /douyincdn|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/;
 
-// ============ Real-time network monitoring ============
-
-/** Image URLs captured via PerformanceObserver (same as DevTools Network tab) */
-const networkUrls = new Set<string>();
-
-/**
- * Watch page network requests for image resources.
- * Works like the DevTools Network panel — captures every <img> load in real time.
- */
-function setupNetworkMonitor(): void {
-  // 1) Capture already-loaded resources
-  try {
-    for (const entry of performance.getEntriesByType('resource')) {
-      const resource = entry as PerformanceResourceTiming;
-      if (resource.initiatorType === 'img' && CDN_PATTERN.test(resource.name)) {
-        networkUrls.add(resource.name);
-      }
-    }
-  } catch { /* performance API not available */ }
-
-  // 2) Continuously watch new resources (real-time capture)
-  try {
-    const observer = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        const resource = entry as PerformanceResourceTiming;
-        if (resource.initiatorType === 'img' && CDN_PATTERN.test(resource.name)) {
-          networkUrls.add(resource.name);
-        }
-      }
-    });
-    observer.observe({ type: 'resource', buffered: true });
-  } catch { /* PerformanceObserver not supported */ }
-}
-
 // ============ Scan ============
 
 /** Use the image URL as the stable identifier to guarantee unique React keys */
 function idFromUrl(url: string): string {
-  // Simple hash of the URL for a shorter, readable key
   let hash = 0;
   for (let i = 0; i < url.length; i++) {
     hash = ((hash << 5) - hash + url.charCodeAt(i)) | 0;
@@ -50,7 +15,7 @@ function idFromUrl(url: string): string {
 }
 
 /** Scan DOM <img> elements for CDN-hosted images */
-function scanDom(): EmojiInfo[] {
+function scanForEmojis(): EmojiInfo[] {
   const results: EmojiInfo[] = [];
   const seen = new Set<string>();
   const images = document.querySelectorAll('img');
@@ -81,41 +46,9 @@ function scanDom(): EmojiInfo[] {
   return results;
 }
 
-// ============ Merge ============
-
-/** Merge DOM scan + network-monitored results, deduped by URL */
-function scanForEmojis(): EmojiInfo[] {
-  const domResults = scanDom();
-
-  // Network-captured URLs — has URL but no dimensions
-  const networkResults: EmojiInfo[] = [];
-  for (const url of networkUrls) {
-    if (url.startsWith('data:')) continue;
-    networkResults.push({
-      src: url,
-      alt: '',
-      width: 0,
-      height: 0,
-      type: url.includes('.gif') || url.includes('sticker') ? 'sticker' : 'emoji',
-      id: idFromUrl(url),
-    });
-  }
-
-  // Merge: DOM first (richer data), then supplement with network-only URLs
-  const merged = new Map<string, EmojiInfo>();
-  for (const e of domResults) merged.set(e.src, e);
-  for (const e of networkResults) {
-    if (!merged.has(e.src)) merged.set(e.src, e);
-  }
-
-  return [...merged.values()];
-}
-
 export default defineContentScript({
   matches: ['*://*.douyin.com/*'],
   main() {
-    setupNetworkMonitor();
-
     browser.runtime.onMessage.addListener((message: { type: string }, _sender) => {
       if (message.type === 'SCAN_EMOJIS') {
         const emojis = scanForEmojis();

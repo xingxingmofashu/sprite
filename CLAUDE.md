@@ -23,7 +23,7 @@ pnpm postinstall      # Run `wxt prepare` after dependency changes
 | Entrypoint | Type | Purpose |
 |---|---|---|
 | `background.ts` | Service worker | Context menu, fetch proxy, ZIP download |
-| `content.ts` | Content script | Emoji detection (DOM + PerformanceObserver), runs on `*.douyin.com/*` |
+| `content.ts` | Content script | DOM emoji scanning, runs on `*.douyin.com/*` |
 | `popup/` | Popup page | React app displayed when clicking extension icon |
 
 ### Auto-imported directories
@@ -36,24 +36,17 @@ Files in these directories are auto-imported by WXT (no explicit import statemen
 ### Message flow
 
 ```
-Popup (App.tsx) ──SCAN_EMOJIS──→ Content Script (content.ts)
-                                  ├─ PerformanceObserver captures live network img requests
-                                  ├─ scanDom() scans <img> elements
-                                  └─ merges both, deduped by URL
+  Popup (App.tsx) ──SCAN_EMOJIS──→ Content Script (content.ts)
+                                    └─ querySelectorAll('img'), filter by CDN domain
+  
+  Popup ──PROXY_IMAGE──→ Background ──fetch()──→ CDN ──base64 dataUrl──→ Popup <img>
+         ──DOWNLOAD_ZIP──→ Background ──fetch each + JSZip──→ download .zip
+         ──DOWNLOAD_SINGLE──→ Background ──browser.downloads──→ single image
+  ```
 
-Popup ──PROXY_IMAGE──→ Background ──fetch()──→ CDN ──base64 dataUrl──→ Popup <img>
-       ──DOWNLOAD_ZIP──→ Background ──fetch each + JSZip──→ download .zip
-       ──DOWNLOAD_SINGLE──→ Background ──browser.downloads──→ single image
-```
+### Emoji detection
 
-### Emoji detection strategy
-
-Two parallel data sources merged on each scan:
-
-1. **PerformanceObserver** (real-time): Captures every `<img>` network request as it loads (same entries as DevTools Network tab). Provides URLs only, no dimensions.
-2. **DOM scan** (fallback): Iterates `document.querySelectorAll('img')` for CDN-hosted images. Provides dimensions + alt text.
-
-DOM results take priority (richer data); network-only URLs supplement the list. Deduped by `src`.
+On `SCAN_EMOJIS` message, the content script iterates `document.querySelectorAll('img')`, filters by CDN domain regex, and deduplicates by URL. Uses the URL hash as a stable React key (`idFromUrl`).
 
 ### Image display
 
