@@ -39,7 +39,7 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
         loading="lazy"
         className={cn(
           'block pointer-events-none object-contain',
-          emoji.type === 'sticker' ? 'max-w-[90%] max-h-[90%]' : 'max-w-[80%] max-h-[80%]',
+          emoji.type === 'sticker' ? 'max-w-[85%] max-h-[85%]' : 'max-w-[75%] max-h-[75%]',
         )}
       />
 

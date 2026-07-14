@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { useEmojiScanner } from '@/utils/useEmojiScanner';
 
 function App() {
@@ -7,14 +8,27 @@ function App() {
     selectedIds,
     status,
     errorMsg,
-    downloading,
     proxiedUrls,
     handleScan,
     toggleSelect,
     toggleSelectAll,
     downloadSingle,
-    downloadSelected,
   } = useEmojiScanner();
+
+  // Local ZIP download loading state (doesn't affect card re-renders)
+  const [zipping, setZipping] = useState(false);
+
+  const downloadSelected = useCallback(async () => {
+    if (selectedIds.size === 0) return;
+    setZipping(true);
+    try {
+      const selected = emojis.filter((e) => selectedIds.has(e.id));
+      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
+    } catch (err) {
+      console.error('Batch download failed:', err);
+    }
+    setZipping(false);
+  }, [emojis, selectedIds]);
 
   if (status === 'scanning') {
     return <LoadingView onRetry={handleScan} />;
@@ -38,14 +52,14 @@ function App() {
         total={emojis.length}
         selectedCount={selectedIds.size}
         allSelected={selectedIds.size === emojis.length}
-        downloading={downloading}
+        downloading={zipping}
         onSelectAll={toggleSelectAll}
         onRescan={handleScan}
         onDownloadZip={downloadSelected}
       />
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2.5">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
           {emojis.map((emoji) => (
             <EmojiCard
               key={emoji.id}

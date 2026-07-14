@@ -9,16 +9,12 @@ interface UseEmojiScannerReturn {
   selectedIds: Set<string>;
   status: Status;
   errorMsg: string;
-  downloading: boolean;
   proxiedUrls: Record<string, string>;
   handleScan: () => Promise<void>;
   toggleSelect: (id: string) => void;
   toggleSelectAll: () => void;
   downloadSingle: (emoji: EmojiInfo) => Promise<void>;
-  downloadSelected: () => Promise<void>;
-}
-
-/**
+} /**
  * Hook managing the full emoji scanning lifecycle:
  * - Scans current douyin tab for emoji images
  * - Manages selection state
@@ -31,7 +27,6 @@ export function useEmojiScanner(): UseEmojiScannerReturn {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [downloading, setDownloading] = useState(false);
 
   const proxiedUrls = useEmojiProxy(emojis);
 
@@ -75,55 +70,40 @@ export function useEmojiScanner(): UseEmojiScannerReturn {
   // Auto-scan on mount
   useEffect(() => { handleScan(); }, [handleScan]);
 
-  const toggleSelect = (id: string) => {
+  const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
-  };
+  }, []);
 
-  const toggleSelectAll = () => {
+  const toggleSelectAll = useCallback(() => {
     setSelectedIds((prev) =>
       prev.size === emojis.length
         ? new Set()
         : new Set(emojis.map((e) => e.id)),
     );
-  };
+  }, [emojis.length]);
 
-  const downloadSingle = async (emoji: EmojiInfo) => {
-    setDownloading(true);
+  const downloadSingle = useCallback(async (emoji: EmojiInfo) => {
     try {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', emojis: [emoji] });
     } catch (err) {
       console.error('Download failed:', err);
     }
-    setDownloading(false);
-  };
-
-  const downloadSelected = async () => {
-    const selected = emojis.filter((e) => selectedIds.has(e.id));
-    if (selected.length === 0) return;
-    setDownloading(true);
-    try {
-      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
-    } catch (err) {
-      console.error('Batch download failed:', err);
-    }
-    setDownloading(false);
-  };
+  }, []);
 
   return {
     emojis,
     selectedIds,
     status,
     errorMsg,
-    downloading,
     proxiedUrls,
     handleScan,
     toggleSelect,
     toggleSelectAll,
     downloadSingle,
-    downloadSelected,
   };
 }
+
