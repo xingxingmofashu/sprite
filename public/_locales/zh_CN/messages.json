@@ -1,0 +1,73 @@
+{
+  "extName": {
+    "message": "抖音表情包下载器"
+  },
+  "extDescription": {
+    "message": "一键下载抖音聊天中的表情包和贴图，支持右键菜单和批量 ZIP 打包下载。"
+  },
+  "contextMenuTitle": {
+    "message": "下载此表情包"
+  },
+  "scanning": {
+    "message": "正在扫描表情包..."
+  },
+  "scanError": {
+    "message": "扫描失败，请确认以下事项："
+  },
+  "scanErrorHint1": {
+    "message": "当前页面是抖音网页版 (douyin.com)"
+  },
+  "scanErrorHint2": {
+    "message": "已打开聊天对话框"
+  },
+  "scanErrorHint3": {
+    "message": "如果问题持续，请刷新页面后重试"
+  },
+  "noEmojisFound": {
+    "message": "当前页面没有发现表情包"
+  },
+  "noEmojisHint": {
+    "message": "请确保已打开聊天对话框，然后刷新页面后重试"
+  },
+  "retry": {
+    "message": "重新扫描"
+  },
+  "totalEmojis": {
+    "message": "共 $1 个（$2 表情 · $3 贴图）",
+    "placeholders": {
+      "count": { "content": "$1" },
+      "emojiCount": { "content": "$2" },
+      "stickerCount": { "content": "$3" }
+    }
+  },
+  "selectAll": {
+    "message": "全选"
+  },
+  "selected": {
+    "message": "已选 $1 个",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "rescan": {
+    "message": "重新扫描"
+  },
+  "downloadZip": {
+    "message": "下载选中 (ZIP)"
+  },
+  "packing": {
+    "message": "打包中..."
+  },
+  "badgeEmoji": {
+    "message": "表情"
+  },
+  "badgeSticker": {
+    "message": "贴图"
+  },
+  "downloadTooltip": {
+    "message": "下载此表情包"
+  },
+  "rightClickHint": {
+    "message": "💡 右键点击页面中的图片，选择「下载此表情包」也可快速下载"
+  }
+}

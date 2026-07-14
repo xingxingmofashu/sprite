@@ -5,8 +5,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
-    name: '抖音表情包下载器',
-    description: '一键下载抖音聊天中的表情包，支持右键菜单和批量打包',
+    name: '__MSG_extName__',
+    description: '__MSG_extDescription__',
+    default_locale: 'en',
     permissions: [
       'contextMenus',
       'downloads',

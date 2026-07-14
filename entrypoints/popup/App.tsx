@@ -13,6 +13,7 @@ interface EmojiInfo {
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
 function App() {
+  const { t } = useI18n();
   const [emojis, setEmojis] = useState<EmojiInfo[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
@@ -32,7 +33,7 @@ function App() {
       const tab = await getCurrentTab();
       if (!tab?.id || !tab.url?.includes('douyin.com')) {
         setStatus('error');
-        setErrorMsg('请先在抖音网页版中打开聊天页面');
+        setErrorMsg(t('scanError'));
         return;
       }
 
@@ -48,11 +49,11 @@ function App() {
       }
       setStatus('done');
     } catch (err) {
-      console.error('扫描失败:', err);
+      console.error('Scan failed:', err);
       setStatus('error');
-      setErrorMsg('扫描失败，请确认：\n1. 当前页面是抖音网页版 (douyin.com)\n2. 已打开聊天对话框\n3. 如果问题持续，请刷新页面后重试');
+      setErrorMsg(`${t('scanError')}\n${t('scanErrorHint1')}\n${t('scanErrorHint2')}\n${t('scanErrorHint3')}`);
     }
-  }, [getCurrentTab]);
+  }, [getCurrentTab, t]);
 
   useEffect(() => { handleScan(); }, [handleScan]);
 
@@ -77,7 +78,7 @@ function App() {
     try {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', emojis: [emoji] });
     } catch (err) {
-      console.error('下载失败:', err);
+      console.error('Download failed:', err);
     }
     setDownloading(false);
   };
@@ -89,17 +90,24 @@ function App() {
     try {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
     } catch (err) {
-      console.error('批量下载失败:', err);
+      console.error('Batch download failed:', err);
     }
     setDownloading(false);
   };
+
+  // ======== Header Component ========
+  const Header = () => (
+    <div className="flex-shrink-0 px-4 pt-3 pb-2 border-b border-gray-100">
+      <h1 className="text-base font-bold text-gray-900">😊 {t('extName')}</h1>
+    </div>
+  );
 
   // ======== Loading ========
   if (status === 'scanning') {
     return (
       <div className="w-[440px] min-h-[300px] flex flex-col items-center justify-center gap-3 bg-white select-none">
         <div className="spinner" />
-        <p className="text-sm text-gray-500">正在扫描表情包...</p>
+        <p className="text-sm text-gray-500">{t('scanning')}</p>
       </div>
     );
   }
@@ -108,9 +116,7 @@ function App() {
   if (status === 'error') {
     return (
       <div className="w-[440px] min-h-[300px] flex flex-col bg-white select-none">
-        <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100">
-          <h1 className="text-base font-bold text-gray-900">😊 抖音表情包下载器</h1>
-        </div>
+        <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-2 px-5 py-8 text-center">
           <p className="text-4xl m-0">⚠️</p>
           <p className="text-sm text-red-500 whitespace-pre-line leading-relaxed max-w-[360px]">{errorMsg}</p>
@@ -118,7 +124,7 @@ function App() {
             onClick={handleScan}
             className="mt-2 px-4 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-[0.97] transition-all cursor-pointer"
           >
-            重新扫描
+            {t('retry')}
           </button>
         </div>
       </div>
@@ -129,18 +135,16 @@ function App() {
   if (emojis.length === 0) {
     return (
       <div className="w-[440px] min-h-[300px] flex flex-col bg-white select-none">
-        <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100">
-          <h1 className="text-base font-bold text-gray-900">😊 抖音表情包下载器</h1>
-        </div>
+        <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-1 px-5 py-8 text-center">
           <p className="text-4xl m-0">😅</p>
-          <p className="text-sm text-gray-500">当前页面没有发现表情包</p>
-          <p className="text-xs text-gray-300">请确保已打开聊天对话框，并刷新页面后重试</p>
+          <p className="text-sm text-gray-500">{t('noEmojisFound')}</p>
+          <p className="text-xs text-gray-300 max-w-[300px]">{t('noEmojisHint')}</p>
           <button
             onClick={handleScan}
             className="mt-3 px-4 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-[0.97] transition-all cursor-pointer"
           >
-            重新扫描
+            {t('retry')}
           </button>
         </div>
       </div>
@@ -155,9 +159,9 @@ function App() {
     <div className="w-[440px] min-h-[300px] max-h-[560px] flex flex-col bg-white select-none">
       {/* Header */}
       <div className="flex-shrink-0 px-4 pt-3 pb-2 border-b border-gray-100">
-        <h1 className="text-base font-bold text-gray-900">😊 抖音表情包下载器</h1>
+        <h1 className="text-base font-bold text-gray-900">😊 {t('extName')}</h1>
         <p className="mt-0.5 text-xs text-gray-400">
-          共 {emojis.length} 个（{emojiCount} 表情 · {stickerCount} 贴图）
+          {t('totalEmojis', [String(emojis.length), String(emojiCount), String(stickerCount)])}
         </p>
       </div>
 
@@ -170,22 +174,24 @@ function App() {
             checked={selectedIds.size === emojis.length}
             onChange={toggleSelectAll}
           />
-          <span>全选</span>
+          <span>{t('selectAll')}</span>
         </label>
-        <span className="text-xs text-gray-400">已选 {selectedIds.size} 个</span>
+        <span className="text-xs text-gray-400">
+          {t('selected', [String(selectedIds.size)])}
+        </span>
         <div className="ml-auto flex gap-1.5">
           <button
             onClick={handleScan}
             className="px-3 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 active:scale-[0.97] transition-all cursor-pointer"
           >
-            重新扫描
+            {t('rescan')}
           </button>
           <button
             onClick={downloadSelected}
             disabled={selectedIds.size === 0 || downloading}
             className="px-3 py-1 rounded-md text-xs font-medium text-white bg-[#fe2c55] hover:bg-[#e0143f] disabled:bg-[#ffb3c5] disabled:cursor-not-allowed active:scale-[0.97] transition-all cursor-pointer"
           >
-            {downloading ? '打包中...' : '下载选中 (ZIP)'}
+            {downloading ? t('packing') : t('downloadZip')}
           </button>
         </div>
       </div>
@@ -226,7 +232,7 @@ function App() {
 
               {/* Download button overlay */}
               <button
-                title="下载此表情包"
+                title={t('downloadTooltip')}
                 onClick={(e) => { e.stopPropagation(); downloadSingle(emoji); }}
                 className="download-btn-overlay cursor-pointer"
               >
@@ -235,7 +241,7 @@ function App() {
 
               {/* Type badge */}
               <span className="emoji-badge text-white">
-                {emoji.type === 'sticker' ? '贴图' : '表情'}
+                {emoji.type === 'sticker' ? t('badgeSticker') : t('badgeEmoji')}
               </span>
             </div>
           ))}
@@ -244,7 +250,7 @@ function App() {
 
       {/* Footer */}
       <div className="flex-shrink-0 px-4 py-2 border-t border-gray-100 text-center">
-        <p className="text-[11px] text-gray-300">💡 右键点击页面中的图片，选择「下载此表情包」也可快速下载</p>
+        <p className="text-[11px] text-gray-300">{t('rightClickHint')}</p>
       </div>
     </div>
   );

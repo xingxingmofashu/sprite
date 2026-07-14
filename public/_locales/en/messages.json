@@ -1,0 +1,77 @@
+{
+  "extName": {
+    "message": "Douyin Emoji Downloader"
+  },
+  "extDescription": {
+    "message": "Download emojis and stickers from Douyin web chat with one click. Supports context menu and batch ZIP download."
+  },
+  "contextMenuTitle": {
+    "message": "Download This Emoji"
+  },
+  "scanning": {
+    "message": "Scanning emojis...",
+    "description": "Loading state while scanning the page for emojis"
+  },
+  "scanError": {
+    "message": "Scan failed. Please make sure:",
+    "description": "Error message when scanning fails"
+  },
+  "scanErrorHint1": {
+    "message": "You are on Douyin web chat (douyin.com)"
+  },
+  "scanErrorHint2": {
+    "message": "A chat dialog is open"
+  },
+  "scanErrorHint3": {
+    "message": "If the issue persists, try refreshing the page"
+  },
+  "noEmojisFound": {
+    "message": "No emojis found on this page"
+  },
+  "noEmojisHint": {
+    "message": "Make sure a chat dialog is open, then try refreshing the page"
+  },
+  "retry": {
+    "message": "Retry"
+  },
+  "totalEmojis": {
+    "message": "Total $1 ($2 emoji · $3 sticker)",
+    "placeholders": {
+      "count": { "content": "$1" },
+      "emojiCount": { "content": "$2" },
+      "stickerCount": { "content": "$3" }
+    }
+  },
+  "selectAll": {
+    "message": "Select all"
+  },
+  "selected": {
+    "message": "Selected $1",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "rescan": {
+    "message": "Rescan"
+  },
+  "downloadZip": {
+    "message": "Download Selected (ZIP)"
+  },
+  "packing": {
+    "message": "Packing..."
+  },
+  "badgeEmoji": {
+    "message": "emoji",
+    "description": "Badge label for small emoji images"
+  },
+  "badgeSticker": {
+    "message": "sticker",
+    "description": "Badge label for larger sticker images"
+  },
+  "downloadTooltip": {
+    "message": "Download this emoji"
+  },
+  "rightClickHint": {
+    "message": "💡 Right-click any image on Douyin and select \"Download This Emoji\" for quick download"
+  }
+}

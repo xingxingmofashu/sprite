@@ -42,7 +42,7 @@ export default defineBackground(() => {
     // 创建右键菜单：仅在抖音页面图片上显示
     browser.contextMenus.create({
       id: 'download-emoji',
-      title: '下载此表情包',
+      title: browser.i18n.getMessage('contextMenuTitle'),
       contexts: ['image'],
       documentUrlPatterns: ['*://*.douyin.com/*'],
     });
