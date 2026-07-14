@@ -35,15 +35,9 @@
   "totalEmojis": {
     "message": "共 $1 个（$2 表情 · $3 贴图）",
     "placeholders": {
-      "count": {
-        "content": "$1"
-      },
-      "emojiCount": {
-        "content": "$2"
-      },
-      "stickerCount": {
-        "content": "$3"
-      }
+      "count": { "content": "$1" },
+      "emojiCount": { "content": "$2" },
+      "stickerCount": { "content": "$3" }
     }
   },
   "selectAll": {
@@ -52,9 +46,7 @@
   "selected": {
     "message": "已选 $1 个",
     "placeholders": {
-      "count": {
-        "content": "$1"
-      }
+      "count": { "content": "$1" }
     }
   },
   "rescan": {

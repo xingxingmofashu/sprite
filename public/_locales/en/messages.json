@@ -9,12 +9,10 @@
     "message": "Download This Emoji"
   },
   "scanning": {
-    "message": "Scanning emojis...",
-    "description": "Loading state while scanning the page for emojis"
+    "message": "Scanning emojis..."
   },
   "scanError": {
-    "message": "Scan failed. Please make sure:",
-    "description": "Error message when scanning fails"
+    "message": "Scan failed. Please make sure:"
   },
   "scanErrorHint1": {
     "message": "You are on Douyin web chat (douyin.com)"
@@ -37,15 +35,9 @@
   "totalEmojis": {
     "message": "Total $1 ($2 emoji · $3 sticker)",
     "placeholders": {
-      "count": {
-        "content": "$1"
-      },
-      "emojiCount": {
-        "content": "$2"
-      },
-      "stickerCount": {
-        "content": "$3"
-      }
+      "count": { "content": "$1" },
+      "emojiCount": { "content": "$2" },
+      "stickerCount": { "content": "$3" }
     }
   },
   "selectAll": {
@@ -54,9 +46,7 @@
   "selected": {
     "message": "Selected $1",
     "placeholders": {
-      "count": {
-        "content": "$1"
-      }
+      "count": { "content": "$1" }
     }
   },
   "rescan": {
@@ -69,12 +59,10 @@
     "message": "Packing..."
   },
   "badgeEmoji": {
-    "message": "emoji",
-    "description": "Badge label for small emoji images"
+    "message": "emoji"
   },
   "badgeSticker": {
-    "message": "sticker",
-    "description": "Badge label for larger sticker images"
+    "message": "sticker"
   },
   "downloadTooltip": {
     "message": "Download this emoji"
