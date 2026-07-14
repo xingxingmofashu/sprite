@@ -28,7 +28,7 @@ function setupNetworkMonitor(): void {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         const resource = entry as PerformanceResourceTiming;
-        if (CDN_PATTERN.test(resource.name)) {
+        if (resource.initiatorType === 'img' && CDN_PATTERN.test(resource.name)) {
           networkUrls.add(resource.name);
         }
       }
@@ -90,6 +90,7 @@ function scanForEmojis(): EmojiInfo[] {
   // Network-captured URLs — has URL but no dimensions
   const networkResults: EmojiInfo[] = [];
   for (const url of networkUrls) {
+    if (url.startsWith('data:')) continue;
     networkResults.push({
       src: url,
       alt: '',
