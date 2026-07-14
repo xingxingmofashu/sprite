@@ -1,33 +1,3 @@
-/**
- * 从 URL 中提取文件名（不含扩展名）
- */
-function getNameFromUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    const pathname = u.pathname;
-    // 取最后一段路径，去掉扩展名
-    const basename = pathname.split('/').pop() || 'emoji';
-    return basename.replace(/\.[^.]+$/, '');
-  } catch {
-    return `emoji_${Date.now()}`;
-  }
-}
-
-/**
- * 从 URL 中提取扩展名
- */
-function getExtension(url: string): string {
-  try {
-    const u = new URL(url);
-    const pathname = u.pathname;
-    const ext = pathname.split('.').pop() || '';
-    const validExts = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
-    return validExts.includes(ext.toLowerCase()) ? ext : 'png';
-  } catch {
-    return 'png';
-  }
-}
-
 /** 单个 PROXY_IMAGE 返回的最大 blob 字节数（～700KB，base64 后约 930KB，安全低于 Chrome 的 1MB 消息限制） */
 const MAX_PROXY_BLOB_SIZE = 700_000;
 
