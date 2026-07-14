@@ -11,6 +11,7 @@ export default defineConfig({
     permissions: [
       'contextMenus',
       'downloads',
+      'sidePanel',
     ],
     host_permissions: [
       '*://*.douyin.com/*',
@@ -22,6 +23,8 @@ export default defineConfig({
       '*://*.ixiguavideo.com/*',
       '*://*.toutiaoimg.com/*',
     ],
+    // No default_popup — clicking the icon opens the side panel via background
+    action: {},
   },
   vite: () => ({
     plugins: [tailwindcss()],

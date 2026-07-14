@@ -1,12 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { EmojiInfo } from '@/utils/types';
 import { useEmojiProxy } from '@/utils/useEmojiProxy';
-import { cn } from '@/utils/cn';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
-
-/** Whether opened as a full window (via popup.html?fullscreen=1) */
-const IS_FULLSCREEN = typeof window !== 'undefined' && window.location.search.includes('fullscreen');
 
 function App() {
   const { t } = useI18n();
@@ -58,12 +54,6 @@ function App() {
   useEffect(() => {
     handleScan();
   }, [handleScan]);
-
-  /** Open the popup in a new tab for a wider view */
-  const handleFullscreen = useCallback(async () => {
-    const url = browser.runtime.getURL('popup.html?fullscreen=1');
-    await browser.tabs.create({ url });
-  }, []);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -119,15 +109,8 @@ function App() {
   const emojiCount = emojis.filter((e) => e.type === 'emoji').length;
 
   return (
-    <div
-      className={cn(
-        'flex flex-col bg-background select-none',
-        IS_FULLSCREEN
-          ? 'w-full min-h-dvh max-h-none'
-          : 'w-[440px] min-h-[300px] max-h-[560px]',
-      )}
-    >
-      <PopupHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} onFullscreen={handleFullscreen} />
+    <div className="w-full h-dvh flex flex-col bg-background select-none">
+      <PopupHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} />
       <PopupToolbar
         total={emojis.length}
         selectedCount={selectedIds.size}
@@ -140,7 +123,7 @@ function App() {
 
       {/* Grid */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        <div className={cn('grid gap-2.5', IS_FULLSCREEN ? 'grid-cols-6 md:grid-cols-8 lg:grid-cols-10' : 'grid-cols-4')}>
+        <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2.5">
           {emojis.map((emoji) => (
             <EmojiCard
               key={emoji.id}

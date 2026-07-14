@@ -29,6 +29,13 @@ export default defineBackground(() => {
     }
   });
 
+  // ============ Side panel ============
+
+  // Open side panel when the extension icon is clicked (no default_popup)
+  browser.action.onClicked.addListener(async (tab) => {
+    await browser.sidePanel.open({ windowId: tab.windowId });
+  });
+
   // ============ Background message handlers ============
 
   browser.runtime.onMessage.addListener(async (message: {

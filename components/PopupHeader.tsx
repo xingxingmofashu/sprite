@@ -1,15 +1,13 @@
 import { Button } from '@/components/ui/button';
-import { Maximize2 } from 'lucide-react';
 
 interface PopupHeaderProps {
   total: number;
   emojiCount: number;
   stickerCount: number;
-  onFullscreen?: () => void;
 }
 
-/** Header bar with title, stats, and fullscreen button */
-export function PopupHeader({ total, emojiCount, stickerCount, onFullscreen }: PopupHeaderProps) {
+/** Header bar with title and stats */
+export function PopupHeader({ total, emojiCount, stickerCount }: PopupHeaderProps) {
   const { t } = useI18n();
 
   return (
@@ -22,12 +20,6 @@ export function PopupHeader({ total, emojiCount, stickerCount, onFullscreen }: P
           </p>
         )}
       </div>
-      {onFullscreen && (
-        <Button variant="outline" size="sm" onClick={onFullscreen} title={t('fullscreen')} className="gap-1.5 shrink-0">
-          <Maximize2 className="size-3.5" />
-          <span className="text-xs">{t('fullscreen')}</span>
-        </Button>
-      )}
     </div>
   );
 }
