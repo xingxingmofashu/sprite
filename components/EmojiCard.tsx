@@ -1,5 +1,4 @@
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
 import type { EmojiInfo } from '@/utils/types';
 
@@ -55,11 +54,6 @@ export function EmojiCard({ emoji, selected, proxiedUrl, onToggle, onDownload }:
       >
         <span className="text-white text-xs leading-none">⬇</span>
       </button>
-
-      {/* Type badge */}
-      <Badge variant="secondary" className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 leading-tight font-medium">
-        {emoji.type === 'sticker' ? t('badgeSticker') : t('badgeEmoji')}
-      </Badge>
     </div>
   );
 }
