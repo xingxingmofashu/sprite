@@ -116,16 +116,14 @@ export default defineBackground(() => {
           }
         }
 
-        const blob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(blob);
+        const base64 = await zip.generateAsync({ type: 'base64' });
 
         await browser.downloads.download({
-          url,
+          url: `data:application/zip;base64,${base64}`,
           filename: `douyin-emojis/emoji-pack_${Date.now()}.zip`,
           saveAs: true,
         });
 
-        URL.revokeObjectURL(url);
         return { success: true, count: successCount, failCount };
       } catch (err) {
         console.error('ZIP pack failed:', err);
