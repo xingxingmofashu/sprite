@@ -73,5 +73,9 @@
   },
   "rightClickHint": {
     "message": "💡 Right-click any image on Douyin and select \"Download This Emoji\" for quick download"
+  },
+  "fullscreen": {
+    "message": "Open in full window",
+    "description": "Toolbar button to open the popup in a new tab"
   }
 }
