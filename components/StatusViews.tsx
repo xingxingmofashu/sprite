@@ -11,7 +11,7 @@ interface EmptyViewProps {
   onRetry: () => void;
 }
 
-/** 加载状态 - 旋转动画 */
+/** Loading state — spinning indicator */
 export function LoadingView({ onRetry: _onRetry }: LoadingViewProps) {
   const { t } = useI18n();
 
@@ -23,7 +23,7 @@ export function LoadingView({ onRetry: _onRetry }: LoadingViewProps) {
   );
 }
 
-/** 错误状态 - 错误信息 + 重试按钮 */
+/** Error state — message + retry button */
 export function ErrorView({ message, onRetry }: ErrorViewProps) {
   const { t } = useI18n();
 
@@ -44,7 +44,7 @@ export function ErrorView({ message, onRetry }: ErrorViewProps) {
   );
 }
 
-/** 空状态 - 提示没有发现表情包 */
+/** Empty state — no emojis found */
 export function EmptyView({ onRetry }: EmptyViewProps) {
   const { t } = useI18n();
 

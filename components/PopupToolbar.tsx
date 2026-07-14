@@ -8,7 +8,7 @@ interface PopupToolbarProps {
   onDownloadZip: () => void;
 }
 
-/** 全选 + 选中计数 + 操作按钮 */
+/** Toolbar: select-all, count, and action buttons */
 export function PopupToolbar({
   total,
   selectedCount,

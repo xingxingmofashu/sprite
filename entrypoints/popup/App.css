@@ -1,11 +1,11 @@
-/* 表情包网格 */
+/* Emoji grid */
 .emoji-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 }
 
-/* 下载按钮 hover 显示 */
+/* Download button hover overlay */
 .download-btn-overlay {
   position: absolute;
   bottom: 4px;
@@ -24,7 +24,7 @@
   opacity: 1;
 }
 
-/* 类型徽章 */
+/* Type badge */
 .emoji-badge {
   position: absolute;
   top: 4px;
@@ -37,7 +37,7 @@
   background: rgba(0, 0, 0, 0.45);
 }
 
-/* 加载动画 */
+/* Spinner animation */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

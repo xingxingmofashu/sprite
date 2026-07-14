@@ -4,7 +4,7 @@ interface PopupHeaderProps {
   stickerCount: number;
 }
 
-/** 顶部标题栏 + 统计 */
+/** Header bar with title and stats */
 export function PopupHeader({ total, emojiCount, stickerCount }: PopupHeaderProps) {
   const { t } = useI18n();
 

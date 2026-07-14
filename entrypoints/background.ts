@@ -1,11 +1,10 @@
-/** 单个 PROXY_IMAGE 返回的最大 blob 字节数（～700KB，base64 后约 930KB，安全低于 Chrome 的 1MB 消息限制） */
+/** Max blob size for PROXY_IMAGE (~700KB — base64 is ~930KB, safely under Chrome's 1MB message limit) */
 const MAX_PROXY_BLOB_SIZE = 700_000;
 
 export default defineBackground(() => {
-  // ============ 右键菜单 ============
+  // ============ Context menu ============
 
   browser.runtime.onInstalled.addListener(() => {
-    // 创建右键菜单：仅在抖音页面图片上显示
     browser.contextMenus.create({
       id: 'download-emoji',
       title: browser.i18n.getMessage('contextMenuTitle'),
@@ -14,7 +13,6 @@ export default defineBackground(() => {
     });
   });
 
-  // 处理右键菜单点击
   browser.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === 'download-emoji' && info.srcUrl) {
       const ext = getExtension(info.srcUrl);
@@ -26,25 +24,26 @@ export default defineBackground(() => {
         filename,
         saveAs: true,
       }).catch((err) => {
-        console.error('下载失败:', err);
+        console.error('Download failed:', err);
       });
     }
   });
 
-  // ============ 批量下载 ZIP ============
+  // ============ Background message handlers ============
 
   browser.runtime.onMessage.addListener(async (message: {
     type: string;
     url?: string;
     emojis?: Array<{ src: string; alt: string }>;
   }) => {
-    // 图片代理：background 通过 host_permissions 跨域 fetch，转 data URL 返回
+    // PROXY_IMAGE: background fetches the image (using host_permissions to bypass CORS)
+    // and returns it as a base64 data URL for the popup to display.
     if (message.type === 'PROXY_IMAGE' && message.url) {
       try {
         const response = await fetch(message.url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        // 检查 Content-Length，跳过过大的图片
+        // Skip oversized images to avoid exceeding Chrome's ~1MB message limit
         const contentLength = response.headers.get('Content-Length');
         if (contentLength && Number(contentLength) > MAX_PROXY_BLOB_SIZE) {
           return { error: `Image too large (${contentLength} bytes)` };
@@ -65,7 +64,8 @@ export default defineBackground(() => {
         return { error: String(err) };
       }
     }
-    // 单个下载
+
+    // DOWNLOAD_SINGLE: download a single emoji image
     if (message.type === 'DOWNLOAD_SINGLE' && message.emojis?.[0]) {
       const emoji = message.emojis[0];
       const ext = getExtension(emoji.src);
@@ -80,12 +80,12 @@ export default defineBackground(() => {
       return { success: true };
     }
 
-    // ZIP 批量下载
+    // DOWNLOAD_ZIP: batch-download selected emojis as a ZIP archive
     if (message.type === 'DOWNLOAD_ZIP' && message.emojis && message.emojis.length > 0) {
       try {
         const { default: JSZip } = await import('jszip');
         const zip = new JSZip();
-        const folder = zip.folder('表情包');
+        const folder = zip.folder('emojis');
 
         let successCount = 0;
         let failCount = 0;
@@ -99,13 +99,12 @@ export default defineBackground(() => {
             const blob = await response.blob();
             const ext = getExtension(emoji.src);
             const name = getNameFromUrl(emoji.src);
-            // 避免重名
             const filename = `${i + 1}_${name}.${ext}`;
 
             folder?.file(filename, blob);
             successCount++;
           } catch (err) {
-            console.error(`下载失败: ${emoji.src}`, err);
+            console.error(`Failed to fetch: ${emoji.src}`, err);
             failCount++;
           }
         }
@@ -115,18 +114,18 @@ export default defineBackground(() => {
 
         await browser.downloads.download({
           url,
-          filename: `douyin-emojis/表情包合集_${Date.now()}.zip`,
+          filename: `douyin-emojis/emoji-pack_${Date.now()}.zip`,
           saveAs: true,
         });
 
         URL.revokeObjectURL(url);
         return { success: true, count: successCount, failCount };
       } catch (err) {
-        console.error('ZIP 打包失败:', err);
+        console.error('ZIP pack failed:', err);
         return { success: false, error: String(err) };
       }
     }
 
-    return { success: false, error: '未知消息类型' };
+    return { success: false, error: 'Unknown message type' };
   });
 });
