@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Douyin Emoji Downloader"
+    "message": "Sprite — Douyin Emoji Downloader"
   },
   "extDescription": {
-    "message": "Download emojis and stickers from Douyin web chat with one click. Supports context menu and batch ZIP download."
+    "message": "Download emojis and stickers from Douyin web chat. Supports context menu and batch ZIP download."
   },
   "contextMenuTitle": {
     "message": "Download This Emoji"
