@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { EmojiInfo } from '@/utils/types';
 import { useEmojiProxy } from '@/utils/useEmojiProxy';
-import { cn } from '@/utils/cn';
-import './App.css';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
@@ -125,7 +123,7 @@ function App() {
 
       {/* Grid */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        <div className="emoji-grid">
+        <div className="grid grid-cols-4 gap-2.5">
           {emojis.map((emoji) => (
             <EmojiCard
               key={emoji.id}
