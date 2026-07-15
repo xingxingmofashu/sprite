@@ -96,7 +96,7 @@ export default defineBackground(() => {
 
         // Fetch images concurrently with throttledMap
         const results = await throttledMap(
-          message.emojis.entries(),
+          Array.from(message.emojis.entries()),
           async ([i, emoji]) => {
             try {
               const response = await fetch(emoji.src);

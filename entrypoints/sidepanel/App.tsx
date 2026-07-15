@@ -7,7 +7,6 @@ function App() {
     emojis,
     selectedIds,
     status,
-    errorMsg,
     proxiedUrls,
     handleScan,
     toggleSelect,
@@ -17,6 +16,10 @@ function App() {
 
   // Local ZIP download loading state (doesn't affect card re-renders)
   const [zipping, setZipping] = useState(false);
+
+  // Preview state
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const previewEmoji = previewIndex !== null ? emojis[previewIndex] ?? null : null;
 
   const downloadSelected = useCallback(async () => {
     if (selectedIds.size === 0) return;
@@ -32,10 +35,6 @@ function App() {
 
   if (status === 'scanning') {
     return <LoadingView onRetry={handleScan} />;
-  }
-
-  if (status === 'error') {
-    return <ErrorView message={errorMsg} onRetry={handleScan} />;
   }
 
   if (emojis.length === 0) {
@@ -60,7 +59,7 @@ function App() {
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
-          {emojis.map((emoji) => (
+          {emojis.map((emoji, index) => (
             <EmojiCard
               key={emoji.id}
               emoji={emoji}
@@ -68,6 +67,7 @@ function App() {
               proxiedUrl={proxiedUrls[emoji.src]}
               onToggle={toggleSelect}
               onDownload={downloadSingle}
+              onPreview={() => setPreviewIndex(index)}
             />
           ))}
         </div>
@@ -76,6 +76,19 @@ function App() {
       <div className="flex-shrink-0 px-4 py-2 border-t border-border text-center">
         <p className="text-[11px] text-muted-foreground/50">{t('rightClickHint')}</p>
       </div>
+
+      {/* Image preview modal */}
+      {previewEmoji && (
+        <PreviewModal
+          emoji={previewEmoji}
+          proxiedUrl={proxiedUrls[previewEmoji.src]}
+          hasPrev={previewIndex !== null && previewIndex > 0}
+          hasNext={previewIndex !== null && previewIndex < emojis.length - 1}
+          onPrev={() => setPreviewIndex((i) => (i !== null ? i - 1 : null))}
+          onNext={() => setPreviewIndex((i) => (i !== null ? i + 1 : null))}
+          onClose={() => setPreviewIndex(null)}
+        />
+      )}
     </div>
   );
 }

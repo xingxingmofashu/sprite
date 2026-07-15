@@ -69,6 +69,9 @@
   "downloadTooltip": {
     "message": "下载此表情包"
   },
+  "previewTooltip": {
+    "message": "预览此图片"
+  },
   "rightClickHint": {
     "message": "右键点击页面中的图片，选择「下载此表情包」也可快速下载"
   }

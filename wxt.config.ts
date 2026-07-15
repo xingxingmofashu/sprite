@@ -25,6 +25,9 @@ export default defineConfig({
     ],
     // No default_popup — clicking the icon opens the side panel via background
     action: {},
+    icons: {
+      16: '/icon.png'
+    },
   },
   vite: () => ({
     plugins: [tailwindcss()],

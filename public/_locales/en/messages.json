@@ -69,6 +69,9 @@
   "downloadTooltip": {
     "message": "Download this emoji"
   },
+  "previewTooltip": {
+    "message": "Preview this emoji"
+  },
   "rightClickHint": {
     "message": "Right-click any image on Douyin and select \"Download This Emoji\" for quick download"
   }

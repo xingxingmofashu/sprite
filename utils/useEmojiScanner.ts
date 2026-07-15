@@ -52,7 +52,7 @@ export function useEmojiScanner(): UseEmojiScannerReturn {
 
       if (result?.emojis && result.emojis.length > 0) {
         setEmojis(result.emojis);
-        setSelectedIds(new Set(result.emojis.map((e) => e.id)));
+        setSelectedIds(new Set());
       } else {
         setEmojis([]);
         setSelectedIds(new Set());
