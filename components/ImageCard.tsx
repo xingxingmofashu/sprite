@@ -1,6 +1,10 @@
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import {
+  Attachment,
+  AttachmentMedia,
+  AttachmentActions,
+  AttachmentAction,
+} from '@/components/ui/attachment';
 import { Maximize2, Download } from 'lucide-react';
 import type { EmojiInfo } from '@/types';
 
@@ -16,48 +20,33 @@ export function ImageCard({ emoji, selected, onToggle, onDownload, onPreview }: 
   const { t } = useI18n();
 
   return (
-    <Card
+    <Attachment
       onClick={() => onToggle(emoji.id)}
+      orientation="vertical"
       className={cn(
-        'group cursor-pointer overflow-hidden transition-all bg-transparent shadow-none border-border',
+        'cursor-pointer transition-all bg-transparent shadow-none border-border w-full gap-0',
         selected
           ? 'border-primary'
           : 'hover:border-primary/30',
       )}
     >
-      <CardContent className="p-0 flex items-center justify-center aspect-square">
-        <img
-          src={emoji.src}
-          loading="lazy"
-          className="w-full h-full object-contain"
-        />
-      </CardContent>
-      <CardFooter className="p-1.5 pt-0 flex items-center justify-between">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          title={t('previewTooltip')}
-          onClick={(e) => {
-            e.stopPropagation();
-            onPreview(emoji);
-          }}
-          className="text-muted-foreground hover:text-foreground"
+      <AttachmentMedia variant="image" className="w-full">
+        <img src={emoji.src} loading="lazy" />
+      </AttachmentMedia>
+      <AttachmentActions className="!static flex justify-between p-1">
+        <AttachmentAction
+          aria-label={t('previewTooltip')}
+          onClick={(e) => { e.stopPropagation(); onPreview(emoji); }}
         >
           <Maximize2 />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          title={t('downloadTooltip')}
-          onClick={(e) => {
-            e.stopPropagation();
-            onDownload(emoji);
-          }}
-          className="text-muted-foreground hover:text-foreground"
+        </AttachmentAction>
+        <AttachmentAction
+          aria-label={t('downloadTooltip')}
+          onClick={(e) => { e.stopPropagation(); onDownload(emoji); }}
         >
           <Download />
-        </Button>
-      </CardFooter>
-    </Card>
+        </AttachmentAction>
+      </AttachmentActions>
+    </Attachment>
   );
 }
