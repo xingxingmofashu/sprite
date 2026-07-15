@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Maximize2, Download } from 'lucide-react';
 import type { EmojiInfo } from '@/types';
 
-interface EmojiCardProps {
+interface ImageCardProps {
   emoji: EmojiInfo;
   selected: boolean;
   onToggle: (id: string) => void;
@@ -11,7 +12,7 @@ interface EmojiCardProps {
   onPreview: (emoji: EmojiInfo) => void;
 }
 
-export function EmojiCard({ emoji, selected, onToggle, onDownload, onPreview }: EmojiCardProps) {
+export function ImageCard({ emoji, selected, onToggle, onDownload, onPreview }: ImageCardProps) {
   const { t } = useI18n();
 
   return (
@@ -32,26 +33,30 @@ export function EmojiCard({ emoji, selected, onToggle, onDownload, onPreview }: 
         />
       </CardContent>
       <CardFooter className="p-1.5 pt-0 flex items-center justify-between">
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           title={t('previewTooltip')}
           onClick={(e) => {
             e.stopPropagation();
             onPreview(emoji);
           }}
-          className="size-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          className="text-muted-foreground hover:text-foreground"
         >
-          <Maximize2 className="size-3.5" />
-        </button>
-        <button
+          <Maximize2 />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           title={t('downloadTooltip')}
           onClick={(e) => {
             e.stopPropagation();
             onDownload(emoji);
           }}
-          className="size-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          className="text-muted-foreground hover:text-foreground"
         >
-          <Download className="size-3.5" />
-        </button>
+          <Download />
+        </Button>
       </CardFooter>
     </Card>
   );

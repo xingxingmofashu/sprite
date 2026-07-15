@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { useEmojiScanner } from '@/utils/useEmojiScanner';
+import { useImageScanner } from '@/utils/useImageScanner';
+import { ImageCard } from '@/components/ImageCard';
 
 function App() {
   const { t } = useI18n();
@@ -11,7 +12,7 @@ function App() {
     toggleSelect,
     toggleSelectAll,
     downloadSingle,
-  } = useEmojiScanner();
+  } = useImageScanner();
 
   // Local ZIP download loading state (doesn't affect card re-renders)
   const [zipping, setZipping] = useState(false);
@@ -56,7 +57,7 @@ function App() {
       <div className="flex-1 overflow-y-auto px-4 py-3">
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
           {emojis.map((emoji, index) => (
-            <EmojiCard
+            <ImageCard
               key={emoji.id}
               emoji={emoji}
               selected={selectedIds.has(emoji.id)}

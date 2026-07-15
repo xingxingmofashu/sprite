@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Minimize2 } from 'lucide-react';
 import type { EmojiInfo } from '@/types';
 
@@ -44,27 +45,31 @@ export function PreviewModal({
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-[92vw] max-h-[92vh] min-w-80 min-h-64 w-auto h-auto p-0 gap-0 bg-transparent border-0 shadow-none [&>button:last-child]:hidden"
-        onPointerDownOutside={onClose}
+        className="max-w-[92vw] max-h-[92vh] min-w-80 min-h-64 w-auto h-auto p-0 gap-0 bg-transparent border-0 shadow-none"
+        showCloseButton={false}
       >
         <DialogTitle className="sr-only">{emoji.alt || 'Preview'}</DialogTitle>
 
         {/* Close button */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 size-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white transition-colors"
+          className="absolute top-3 right-3 z-10 rounded-full bg-white/20 hover:bg-white/35 text-white"
         >
           <Minimize2 className="size-5" />
-        </button>
+        </Button>
 
         {/* Prev */}
         {hasPrev && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={(e) => { e.stopPropagation(); onPrev(); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 size-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white transition-colors"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/20 hover:bg-white/35 text-white"
           >
             <ChevronLeft className="size-6" />
-          </button>
+          </Button>
         )}
 
         {/* Image */}
@@ -76,12 +81,14 @@ export function PreviewModal({
 
         {/* Next */}
         {hasNext && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={(e) => { e.stopPropagation(); onNext(); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 size-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/20 hover:bg-white/35 text-white"
           >
             <ChevronRight className="size-6" />
-          </button>
+          </Button>
         )}
 
         {/* Filename footer */}

@@ -31,8 +31,8 @@ pnpm postinstall      # Run `wxt prepare` after dependency changes
 Files in these directories are auto-imported by WXT (no explicit import statement needed):
 
 - `types/` — `EmojiInfo`, `ScanResponse`
-- `utils/` — `useI18n()`, `useEmojiScanner()`, `async.ts` (throttledMap)
-- `components/` — `EmojiCard`, `SidePanelHeader`, `SidePanelToolbar`, `PreviewModal`, `LoadingView`, `EmptyView`
+- `utils/` — `useI18n()`, `useImageScanner()`, `async.ts` (throttledMap)
+- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `PreviewModal`, `LoadingView`, `EmptyView`
 
 ### Message flow
 

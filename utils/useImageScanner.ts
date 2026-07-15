@@ -3,7 +3,7 @@ import type { EmojiInfo } from '@/types';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
-interface UseEmojiScannerReturn {
+interface UseImageScannerReturn {
   emojis: EmojiInfo[];
   selectedIds: Set<string>;
   status: Status;
@@ -18,7 +18,7 @@ interface UseEmojiScannerReturn {
  * - Manages selection state
  * - Handles single and batch download
  */
-export function useEmojiScanner(): UseEmojiScannerReturn {
+export function useImageScanner(): UseImageScannerReturn {
   const { t } = useI18n();
   const [emojis, setEmojis] = useState<EmojiInfo[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
