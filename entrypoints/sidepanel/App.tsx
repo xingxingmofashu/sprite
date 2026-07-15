@@ -73,7 +73,7 @@ function App() {
         </div>
       </div>
 
-      <div className="flex-shrink-0 px-4 py-2 border-t border-border text-center">
+      <div className="shrink-0 px-4 py-2 border-t border-border text-center">
         <p className="text-[11px] text-muted-foreground/50">{t('rightClickHint')}</p>
       </div>
 

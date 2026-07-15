@@ -24,7 +24,7 @@ export function SidePanelToolbar({
   const { t } = useI18n();
 
   return (
-    <div className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-border">
+    <div className="shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-border">
       <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer select-none">
         <Checkbox checked={allSelected && total > 0} onCheckedChange={onSelectAll} className="size-3.5" />
         <span>{t('selectAll')}</span>

@@ -16,7 +16,7 @@ export function LoadingView({ onRetry: _onRetry }: LoadingViewProps) {
   const { t } = useI18n();
 
   return (
-    <div className="w-[440px] min-h-[300px] flex flex-col items-center justify-center gap-3 bg-background select-none">
+    <div className="w-full h-dvh flex flex-col items-center justify-center gap-3 bg-background select-none">
       <Spinner className="size-8 text-muted-foreground" />
       <p className="text-sm text-muted-foreground">{t('scanning')}</p>
     </div>

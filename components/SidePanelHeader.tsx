@@ -9,7 +9,7 @@ export function SidePanelHeader({ total, emojiCount, stickerCount }: SidePanelHe
   const { t } = useI18n();
 
   return (
-    <div className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
+    <div className="shrink-0 flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
       <div className="min-w-0">
         <h1 className="text-base font-bold text-foreground truncate">{t('extName')}</h1>
         {total > 0 && (
