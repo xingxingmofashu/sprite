@@ -29,7 +29,7 @@ export function EmptyView({ onRetry }: EmptyViewProps) {
 
   return (
     <div className="w-full h-dvh flex flex-col bg-background select-none">
-      <SidePanelHeader total={0} emojiCount={0} stickerCount={0} />
+      <SidePanelHeader total={0} />
       <Empty className="flex-1">
         <EmptyHeader>
           <EmptyMedia variant="icon">

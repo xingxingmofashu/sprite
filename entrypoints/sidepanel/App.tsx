@@ -7,7 +7,6 @@ function App() {
     emojis,
     selectedIds,
     status,
-    proxiedUrls,
     handleScan,
     toggleSelect,
     toggleSelectAll,
@@ -41,12 +40,9 @@ function App() {
     return <EmptyView onRetry={handleScan} />;
   }
 
-  const stickerCount = emojis.filter((e) => e.type === 'sticker').length;
-  const emojiCount = emojis.filter((e) => e.type === 'emoji').length;
-
   return (
     <div className="w-full h-dvh flex flex-col bg-background select-none">
-      <SidePanelHeader total={emojis.length} emojiCount={emojiCount} stickerCount={stickerCount} />
+      <SidePanelHeader total={emojis.length} />
       <SidePanelToolbar
         total={emojis.length}
         selectedCount={selectedIds.size}
@@ -64,7 +60,6 @@ function App() {
               key={emoji.id}
               emoji={emoji}
               selected={selectedIds.has(emoji.id)}
-              proxiedUrl={proxiedUrls[emoji.src]}
               onToggle={toggleSelect}
               onDownload={downloadSingle}
               onPreview={() => setPreviewIndex(index)}
@@ -81,7 +76,6 @@ function App() {
       {previewEmoji && (
         <PreviewModal
           emoji={previewEmoji}
-          proxiedUrl={proxiedUrls[previewEmoji.src]}
           hasPrev={previewIndex !== null && previewIndex > 0}
           hasNext={previewIndex !== null && previewIndex < emojis.length - 1}
           onPrev={() => setPreviewIndex((i) => (i !== null ? i - 1 : null))}

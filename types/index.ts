@@ -3,7 +3,6 @@ export interface EmojiInfo {
   alt: string;
   width: number;
   height: number;
-  type: 'emoji' | 'sticker';
   id: string;
 }
 

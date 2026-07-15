@@ -33,16 +33,10 @@
     "message": "重新扫描"
   },
   "totalEmojis": {
-    "message": "共 $1 个（$2 表情 · $3 贴图）",
+    "message": "共 $1 个表情包",
     "placeholders": {
       "count": {
         "content": "$1"
-      },
-      "emojiCount": {
-        "content": "$2"
-      },
-      "stickerCount": {
-        "content": "$3"
       }
     }
   },

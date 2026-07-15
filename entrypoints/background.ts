@@ -1,6 +1,3 @@
-/** Max blob size for PROXY_IMAGE (~700KB — base64 is ~930KB, safely under Chrome's 1MB message limit) */
-const MAX_PROXY_BLOB_SIZE = 700_000;
-
 export default defineBackground(() => {
   // ============ Context menu ============
 
@@ -15,13 +12,8 @@ export default defineBackground(() => {
 
   browser.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === 'download-emoji' && info.srcUrl) {
-      const ext = getExtension(info.srcUrl);
-      const name = getNameFromUrl(info.srcUrl);
-      const filename = `douyin-emojis/${name}.${ext}`;
-
       browser.downloads.download({
         url: info.srcUrl,
-        filename,
         saveAs: true,
       }).catch((err) => {
         console.error('Download failed:', err);
@@ -39,48 +31,12 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener(async (message: {
     type: string;
-    url?: string;
     emojis?: Array<{ src: string; alt: string }>;
   }) => {
-    // PROXY_IMAGE: background fetches the image (using host_permissions to bypass CORS)
-    // and returns it as a base64 data URL for the side panel to display.
-    if (message.type === 'PROXY_IMAGE' && message.url) {
-      try {
-        const response = await fetch(message.url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        // Skip oversized images to avoid exceeding Chrome's ~1MB message limit
-        const contentLength = response.headers.get('Content-Length');
-        if (contentLength && Number(contentLength) > MAX_PROXY_BLOB_SIZE) {
-          return { error: `Image too large (${contentLength} bytes)` };
-        }
-
-        const blob = await response.blob();
-        if (blob.size > MAX_PROXY_BLOB_SIZE) {
-          return { error: `Image too large (${blob.size} bytes)` };
-        }
-
-        const dataUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(blob);
-        });
-        return { dataUrl };
-      } catch (err) {
-        return { error: String(err) };
-      }
-    }
-
     // DOWNLOAD_SINGLE: download a single emoji image
     if (message.type === 'DOWNLOAD_SINGLE' && message.emojis?.[0]) {
-      const emoji = message.emojis[0];
-      const ext = getExtension(emoji.src);
-      const name = getNameFromUrl(emoji.src);
-      const filename = `douyin-emojis/${name}.${ext}`;
-
       await browser.downloads.download({
-        url: emoji.src,
-        filename,
+        url: message.emojis[0].src,
         saveAs: true,
       });
       return { success: true };
@@ -103,9 +59,10 @@ export default defineBackground(() => {
               if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
               const blob = await response.blob();
-              const ext = getExtension(emoji.src);
-              const name = getNameFromUrl(emoji.src);
-              folder.file(`${i + 1}_${name}.${ext}`, blob);
+              // Derive extension from Content-Type header (e.g. image/webp → webp)
+              const ct = response.headers.get('Content-Type') || '';
+              const ext = ct.split('/').pop()?.split(';')[0] || 'png';
+              folder.file(`${i + 1}.${ext}`, blob);
               return 'ok' as const;
             } catch (err) {
               console.error(`Failed to fetch: ${emoji.src}`, err);

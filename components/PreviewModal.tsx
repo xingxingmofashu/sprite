@@ -5,11 +5,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ChevronLeft, ChevronRight, Minimize2 } from 'lucide-react';
-import type { EmojiInfo } from '@/utils/types';
+import type { EmojiInfo } from '@/types';
 
 interface PreviewModalProps {
   emoji: EmojiInfo | null;
-  proxiedUrl?: string;
   hasPrev: boolean;
   hasNext: boolean;
   onPrev: () => void;
@@ -19,7 +18,6 @@ interface PreviewModalProps {
 
 export function PreviewModal({
   emoji,
-  proxiedUrl,
   hasPrev,
   hasNext,
   onPrev,
@@ -46,7 +44,7 @@ export function PreviewModal({
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-[92vw] max-h-[92vh] w-auto h-auto p-0 gap-0 bg-transparent border-0 shadow-none [&>button:last-child]:hidden"
+        className="max-w-[92vw] max-h-[92vh] min-w-80 min-h-64 w-auto h-auto p-0 gap-0 bg-transparent border-0 shadow-none [&>button:last-child]:hidden"
         onPointerDownOutside={onClose}
       >
         <DialogTitle className="sr-only">{emoji.alt || 'Preview'}</DialogTitle>
@@ -71,8 +69,8 @@ export function PreviewModal({
 
         {/* Image */}
         <img
-          src={proxiedUrl || emoji.src}
-          className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg select-none"
+          src={emoji.src}
+          className="max-w-full max-h-[calc(92vh-2rem)] object-contain rounded-lg select-none"
           draggable={false}
         />
 

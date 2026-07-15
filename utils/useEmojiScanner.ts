@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { EmojiInfo } from '@/utils/types';
-import { useEmojiProxy } from '@/utils/useEmojiProxy';
+import type { EmojiInfo } from '@/types';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
@@ -9,7 +8,6 @@ interface UseEmojiScannerReturn {
   selectedIds: Set<string>;
   status: Status;
   errorMsg: string;
-  proxiedUrls: Record<string, string>;
   handleScan: () => Promise<void>;
   toggleSelect: (id: string) => void;
   toggleSelectAll: () => void;
@@ -19,7 +17,6 @@ interface UseEmojiScannerReturn {
  * - Scans current douyin tab for emoji images
  * - Manages selection state
  * - Handles single and batch download
- * - Proxies images through background for CORS-free display
  */
 export function useEmojiScanner(): UseEmojiScannerReturn {
   const { t } = useI18n();
@@ -27,8 +24,6 @@ export function useEmojiScanner(): UseEmojiScannerReturn {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-
-  const proxiedUrls = useEmojiProxy(emojis);
 
   const getCurrentTab = useCallback(async () => {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
@@ -99,7 +94,6 @@ export function useEmojiScanner(): UseEmojiScannerReturn {
     selectedIds,
     status,
     errorMsg,
-    proxiedUrls,
     handleScan,
     toggleSelect,
     toggleSelectAll,

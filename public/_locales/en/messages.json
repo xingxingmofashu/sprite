@@ -33,16 +33,10 @@
     "message": "Retry"
   },
   "totalEmojis": {
-    "message": "Total $1 ($2 emoji · $3 sticker)",
+    "message": "Total $1 emojis",
     "placeholders": {
       "count": {
         "content": "$1"
-      },
-      "emojiCount": {
-        "content": "$2"
-      },
-      "stickerCount": {
-        "content": "$3"
       }
     }
   },

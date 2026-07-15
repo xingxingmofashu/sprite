@@ -1,11 +1,9 @@
 interface SidePanelHeaderProps {
   total: number;
-  emojiCount: number;
-  stickerCount: number;
 }
 
 /** Header bar with title and stats */
-export function SidePanelHeader({ total, emojiCount, stickerCount }: SidePanelHeaderProps) {
+export function SidePanelHeader({ total }: SidePanelHeaderProps) {
   const { t } = useI18n();
 
   return (
@@ -14,7 +12,7 @@ export function SidePanelHeader({ total, emojiCount, stickerCount }: SidePanelHe
         <h1 className="text-base font-bold text-foreground truncate">{t('extName')}</h1>
         {total > 0 && (
           <p className="mt-0.5 text-xs text-muted-foreground/70">
-            {t('totalEmojis', [String(total), String(emojiCount), String(stickerCount)])}
+            {t('totalEmojis', [String(total)])}
           </p>
         )}
       </div>

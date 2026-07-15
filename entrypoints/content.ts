@@ -1,4 +1,4 @@
-import type { EmojiInfo, ScanResponse } from '@/utils/types';
+import type { EmojiInfo, ScanResponse } from '@/types';
 
 /** Douyin CDN domain regex */
 const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/;
@@ -35,10 +35,6 @@ function scanForEmojis(): EmojiInfo[] {
       alt: (img.alt || '').trim(),
       width,
       height,
-      type:
-        src.includes('.gif') || src.includes('sticker') || width > 150 || height > 150
-          ? 'sticker'
-          : 'emoji',
       id: idFromUrl(src),
     });
   });
