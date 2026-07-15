@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Maximize2, Download } from 'lucide-react';
 import type { EmojiInfo } from '@/types';
