@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
+  suppressWarnings: {
+    firefoxDataCollection: true,
+  },
   manifest: {
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
@@ -27,6 +30,9 @@ export default defineConfig({
     action: {},
     icons: {
       16: '/icon.png'
+    },
+    browser_specific_settings: {
+      gecko: { id: 'sprite@xingxingmofashu.github.io' },
     },
   },
   vite: () => ({
