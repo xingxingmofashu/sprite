@@ -35,12 +35,16 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
+      - name: Extract changelog
+        run: |
+          sed -n '/^## v${{ steps.version.outputs.VERSION }}/,/^---$/{ /^---$/d; p; }' CHANGELOG.md > /tmp/release-body.md
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           name: v${{ steps.version.outputs.VERSION }}
+          body_path: /tmp/release-body.md
           files: |
             .output/sprite-*-chrome.zip
             .output/sprite-*-firefox.zip
             .output/sprite-*-sources.zip
-          generate_release_notes: true
