@@ -68,5 +68,8 @@
   },
   "rightClickHint": {
     "message": "Right-click any image on Douyin and select \"Download This Emoji\" for quick download"
+  },
+  "downloadError": {
+    "message": "Download failed. Please try again or refresh the page."
   }
 }

@@ -68,5 +68,8 @@
   },
   "rightClickHint": {
     "message": "右键点击页面中的图片，选择「下载此表情包」也可快速下载"
+  },
+  "downloadError": {
+    "message": "下载失败，请重试或刷新页面。"
   }
 }

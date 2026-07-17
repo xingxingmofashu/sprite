@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useImageScanner } from '@/utils/useImageScanner';
 import { ImageCard } from '@/components/ImageCard';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 function App() {
   const { t } = useI18n();
@@ -21,6 +22,13 @@ function App() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const previewEmoji = previewIndex !== null ? emojis[previewIndex] ?? null : null;
 
+  // Reset preview if emojis array shrinks below current index
+  useEffect(() => {
+    if (previewIndex !== null && previewIndex >= emojis.length) {
+      setPreviewIndex(null);
+    }
+  }, [emojis.length, previewIndex]);
+
   const downloadSelected = useCallback(async () => {
     if (selectedIds.size === 0) return;
     setZipping(true);
@@ -29,9 +37,10 @@ function App() {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
     } catch (err) {
       console.error('Batch download failed:', err);
+      alert(t('downloadError'));
     }
     setZipping(false);
-  }, [emojis, selectedIds]);
+  }, [emojis, selectedIds, t]);
 
   if (status === 'scanning') {
     return <LoadingView onRetry={handleScan} />;
@@ -75,14 +84,20 @@ function App() {
 
       {/* Image preview modal */}
       {previewEmoji && (
-        <PreviewModal
-          emoji={previewEmoji}
-          hasPrev={previewIndex !== null && previewIndex > 0}
-          hasNext={previewIndex !== null && previewIndex < emojis.length - 1}
-          onPrev={() => setPreviewIndex((i) => (i !== null ? i - 1 : null))}
-          onNext={() => setPreviewIndex((i) => (i !== null ? i + 1 : null))}
-          onClose={() => setPreviewIndex(null)}
-        />
+        <ErrorBoundary fallback={
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <p className="text-white text-sm">Preview unavailable</p>
+          </div>
+        }>
+          <PreviewModal
+            emoji={previewEmoji}
+            index={previewIndex!}
+            total={emojis.length}
+            onPrev={() => setPreviewIndex((i) => i! - 1)}
+            onNext={() => setPreviewIndex((i) => i! + 1)}
+            onClose={() => setPreviewIndex(null)}
+          />
+        </ErrorBoundary>
       )}
     </div>
   );

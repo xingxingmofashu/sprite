@@ -86,8 +86,9 @@ export function useImageScanner(): UseImageScannerReturn {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', emojis: [emoji] });
     } catch (err) {
       console.error('Download failed:', err);
+      alert(t('downloadError'));
     }
-  }, []);
+  }, [t]);
 
   return {
     emojis,
