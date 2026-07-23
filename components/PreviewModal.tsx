@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -35,29 +35,17 @@ export function PreviewModal({
   const [imgError, setImgError] = useState(false);
   useEffect(() => { setImgError(false); }, [emoji.src]);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      try {
-        if (e.key === 'ArrowLeft' && hasPrev) onPrev();
-        if (e.key === 'ArrowRight' && hasNext) onNext();
-      } catch (err) {
-        console.error('Preview navigation failed:', err);
-      }
-    },
-    [onPrev, onNext, hasPrev, hasNext],
-  );
-
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && hasPrev) onPrev();
+      if (e.key === 'ArrowRight' && hasNext) onNext();
+    };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  const safeClose = useCallback(() => {
-    try { onClose(); } catch (err) { console.error('Failed to close preview:', err); }
-  }, [onClose]);
+  }, [onPrev, onNext, hasPrev, hasNext]);
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) safeClose(); }}>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
         className="flex flex-col w-[92vw] max-w-[92vw] h-[92vh] max-h-[92vh] p-0 gap-0 bg-transparent border-0 shadow-none"
         showCloseButton={false}

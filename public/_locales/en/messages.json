@@ -11,18 +11,6 @@
   "scanning": {
     "message": "Scanning emojis..."
   },
-  "scanError": {
-    "message": "Scan failed. Please make sure:"
-  },
-  "scanErrorHint1": {
-    "message": "You are on Douyin web chat (douyin.com)"
-  },
-  "scanErrorHint2": {
-    "message": "A chat dialog is open"
-  },
-  "scanErrorHint3": {
-    "message": "If the issue persists, try refreshing the page"
-  },
   "noEmojisFound": {
     "message": "No emojis found on this page"
   },
