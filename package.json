@@ -2,7 +2,7 @@
   "name": "sprite",
   "description": "Douyin emoji and sticker downloader browser extension",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",

@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.0 (2026-07-23)
+
+### Features
+- Classify scanned images into emoji / avatar / other based on img class names and URL, with a filter bar to filter the grid by kind
+- Rename EmojiInfo → ImageInfo, EmojiKind → ImageKind, and SCAN_EMOJIS → SCAN_IMAGES for consistency
+
+### Fixes
+- Classify emoji by MessageItemEmojiimage class alone (case-insensitive) so emojis are no longer misclassified as "other"
+- Center the preview image both vertically and horizontally, and give it a fixed display area so layout no longer shifts when switching between images of different sizes
+
+---
+
 ## v0.1.0 (2026-07-17)
 
 ### Features
