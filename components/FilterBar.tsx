@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { ImageInfo, ImageKind } from '@/types';
 
 export type FilterKind = ImageKind | 'all';
@@ -27,24 +27,27 @@ export function FilterBar({ emojis, filter, onFilterChange }: FilterBarProps) {
   }, [emojis]);
 
   return (
-    <div className="shrink-0 flex items-center gap-1 px-4 py-2 border-b border-border overflow-x-auto">
-      {FILTERS.map(({ key, labelKey }) => {
-        const count = counts[key] ?? 0;
-        const active = filter === key;
-        return (
-          <Button
-            key={key}
-            variant={active ? 'secondary' : 'ghost'}
-            size="xs"
-            disabled={count === 0 && key !== 'all'}
-            onClick={() => onFilterChange(key)}
-            className="disabled:opacity-40"
-          >
-            <span>{t(labelKey)}</span>
-            <span className="ml-1 text-[10px] text-muted-foreground/70">{count}</span>
-          </Button>
-        );
-      })}
-    </div>
+    <Tabs
+      value={filter}
+      onValueChange={(val) => onFilterChange(val as FilterKind)}
+      className="shrink-0 px-4 py-2 border-b border-border"
+    >
+      <TabsList className="h-7">
+        {FILTERS.map(({ key, labelKey }) => {
+          const count = counts[key] ?? 0;
+          return (
+            <TabsTrigger
+              key={key}
+              value={key}
+              disabled={count === 0 && key !== 'all'}
+              className="gap-1 text-xs px-2 py-0.5"
+            >
+              {t(labelKey)}
+              <span className="text-[10px] text-muted-foreground/70">{count}</span>
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
+    </Tabs>
   );
 }

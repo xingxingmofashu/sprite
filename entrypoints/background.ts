@@ -1,3 +1,5 @@
+import { throttledMap } from '@/lib/utils';
+
 export default defineBackground(() => {
   // ============ Context menu ============
 
