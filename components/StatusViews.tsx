@@ -3,16 +3,12 @@ import { Spinner } from '@/components/ui/spinner';
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { ImageOff } from 'lucide-react';
 
-interface LoadingViewProps {
-  onRetry: () => void;
-}
-
 interface EmptyViewProps {
   onRetry: () => void;
 }
 
 /** Loading state — spinning indicator */
-export function LoadingView({ onRetry: _onRetry }: LoadingViewProps) {
+export function LoadingView() {
   const { t } = useI18n();
 
   return (

@@ -1,7 +1,5 @@
+import hash from '@emotion/hash';
 import type { ImageInfo, ImageKind, ScanResponse } from '@/types';
-
-/** Douyin CDN domain regex */
-const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo|bytedance|amemv|snssdk|ixigua|toutiao|yzcdn|bdurl|bytegoose|bytetcc|byteoss/;
 
 /** Classify an image into emoji / avatar / other based on class names and URL */
 function classifyImage(img: HTMLImageElement, src: string): ImageKind {
@@ -22,15 +20,6 @@ function classifyImage(img: HTMLImageElement, src: string): ImageKind {
 
 // ============ Scan ============
 
-/** Use the image URL as the stable identifier to guarantee unique React keys */
-function idFromUrl(url: string): string {
-  let hash = 0;
-  for (let i = 0; i < url.length; i++) {
-    hash = ((hash << 5) - hash + url.charCodeAt(i)) | 0;
-  }
-  return `e-${Math.abs(hash).toString(36)}`;
-}
-
 /** Scan DOM <img> elements for CDN-hosted images */
 function scanForEmojis(): ImageInfo[] {
   const results: ImageInfo[] = [];
@@ -40,7 +29,6 @@ function scanForEmojis(): ImageInfo[] {
   images.forEach((img) => {
     const src = img.currentSrc || img.src || '';
     if (!src || src.startsWith('data:') || seen.has(src)) return;
-    if (!CDN_PATTERN.test(src)) return;
     seen.add(src);
 
     const width = img.naturalWidth || img.width || 0;
@@ -52,7 +40,7 @@ function scanForEmojis(): ImageInfo[] {
       alt: (img.alt || '').trim(),
       width,
       height,
-      id: idFromUrl(src),
+      id: hash(src),
       kind: classifyImage(img, src),
     });
   });

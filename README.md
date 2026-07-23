@@ -58,19 +58,19 @@ pnpm compile    # TypeScript type-check
 
 ## How it works
 
-Sprite scans the DOM of an active Douyin chat page and extracts emoji/sticker image URLs from known CDN domains. Images are proxied through the background service worker (which has `host_permissions` to bypass CORS) and displayed as base64 data URLs in the side panel.
+Sprite scans the DOM of an active Douyin chat page and extracts emoji/sticker image URLs from known CDN domains. Images load directly as `<img src>` in the side panel — the CDN domains are in `host_permissions`, so no proxy or base64 conversion is needed.
 
 | Entrypoint | Purpose |
 |---|---|
-| `sidepanel/` | Main UI — React app with emoji grid, toolbar, and preview modal |
-| `background.ts` | Service worker — context menu, image proxy, ZIP download |
+| `sidepanel/` | Main UI — React app with image grid, filter bar, toolbar, and preview modal |
+| `background.ts` | Service worker — context menu, single/ZIP download |
 | `content.ts` | Content script — DOM scanning on `*.douyin.com/*` |
 
 ## Tech Stack
 
 - **WXT** v0.20 — Vite-based browser extension framework
 - **React** 19 + TypeScript
-- **Tailwind CSS** v4 + shadcn/ui (Card, Dialog, Empty, Button, Checkbox)
+- **Tailwind CSS** v4 + shadcn/ui (Dialog, Empty, Button, Checkbox, Attachment)
 - **JSZip** — Client-side ZIP packaging
 - **Lucide** — Icons
 

@@ -67,7 +67,7 @@ function App() {
   }, [emojis, selectedIds, t]);
 
   if (status === 'scanning') {
-    return <LoadingView onRetry={handleScan} />;
+    return <LoadingView />;
   }
 
   if (emojis.length === 0) {
