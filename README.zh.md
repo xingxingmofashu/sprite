@@ -1,6 +1,17 @@
-# Sprite
+<h1 align="center">Sprite</h1>
 
-一款 Chrome/Edge 浏览器扩展，用于从抖音网页版聊天中下载表情包和贴图。通过侧边面板浏览、预览、批量选择并打包下载。
+<p align="center">一款 Chrome/Edge 浏览器扩展，用于从抖音网页版聊天中下载表情包和贴图。通过侧边面板浏览、预览、批量选择并打包下载。</p>
+
+<p align="center">
+  <a href="https://github.com/xingxingmofashu/sprite/releases"><img alt="Release" src="https://img.shields.io/github/v/release/xingxingmofashu/sprite?style=flat-square" /></a>
+  <a href="https://github.com/xingxingmofashu/sprite/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/xingxingmofashu/sprite/ci.yml?style=flat-square&branch=main" /></a>
+  <a href="https://github.com/xingxingmofashu/sprite/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/xingxingmofashu/sprite?style=flat-square" /></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> |
+  <a href="README.zh.md">简体中文</a>
+</p>
 
 ## 功能
 

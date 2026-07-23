@@ -1,6 +1,27 @@
-# Sprite
+<h1 align="center">Sprite</h1>
 
-A Chrome/Edge browser extension for downloading emojis and stickers from Douyin (TikTok China) web chat. Browse, preview, select, and batch-download emojis in a clean side panel interface.
+<p align="center">A Chrome/Edge browser extension for downloading emojis and stickers from Douyin (TikTok China) web chat. Browse, preview, select, and batch-download emojis in a clean side panel interface.</p>
+
+<p align="center">
+  <a href="https://github.com/xingxingmofashu/sprite/releases"><img alt="Release" src="https://img.shields.io/github/v/release/xingxingmofashu/sprite?style=flat-square" /></a>
+  <a href="https://github.com/xingxingmofashu/sprite/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/xingxingmofashu/sprite/ci.yml?style=flat-square&branch=main" /></a>
+  <a href="https://github.com/xingxingmofashu/sprite/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/xingxingmofashu/sprite?style=flat-square" /></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> |
+  <a href="README.zh.md">简体中文</a>
+</p>
+
+## Screenshots
+
+### Side Panel
+
+![Side Panel](.github/assets/home.png)
+
+### Preview Modal
+
+![Preview Modal](.github/assets/preview.png)
 
 ## Features
 
