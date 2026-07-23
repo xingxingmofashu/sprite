@@ -71,5 +71,20 @@
   },
   "downloadError": {
     "message": "下载失败，请重试或刷新页面。"
+  },
+  "filterAll": {
+    "message": "全部"
+  },
+  "filterEmoji": {
+    "message": "表情"
+  },
+  "filterAvatar": {
+    "message": "头像"
+  },
+  "filterOther": {
+    "message": "其他"
+  },
+  "filterEmpty": {
+    "message": "该分类下没有图片"
   }
 }

@@ -8,12 +8,12 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Minimize2, ImageOff } from 'lucide-react';
-import type { EmojiInfo } from '@/types';
+import type { ImageInfo } from '@/types';
 
 const OVERLAY_BUTTON = 'rounded-full bg-white/20 hover:bg-white/35 text-white';
 
 interface PreviewModalProps {
-  emoji: EmojiInfo;
+  emoji: ImageInfo;
   index: number;
   total: number;
   onPrev: () => void;

@@ -30,23 +30,29 @@ pnpm postinstall      # Run `wxt prepare` after dependency changes
 
 Files in these directories are auto-imported by WXT (no explicit import statement needed):
 
-- `types/` — `EmojiInfo`, `ScanResponse`
+- `types/` — `ImageInfo`, `ImageKind`, `ScanResponse`
 - `utils/` — `useI18n()`, `useImageScanner()`, `async.ts` (throttledMap)
-- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `PreviewModal`, `LoadingView`, `EmptyView`
+- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `FilterBar`, `PreviewModal`, `LoadingView`, `EmptyView`
 
 ### Message flow
 
 ```
-  Side Panel (App.tsx) ──SCAN_EMOJIS──→ Content Script (content.ts)
-                                          └─ querySelectorAll('img'), filter by CDN domain
+  Side Panel (App.tsx) ──SCAN_IMAGES──→ Content Script (content.ts)
+                                          └─ querySelectorAll('img'), filter by CDN domain, classify by kind
 
   Side Panel ──DOWNLOAD_ZIP──→ Background ──fetch each + JSZip──→ download .zip
               ──DOWNLOAD_SINGLE──→ Background ──browser.downloads──→ single image
 ```
 
-### Emoji detection
+### Image detection & classification
 
-On `SCAN_EMOJIS` message, the content script iterates `document.querySelectorAll('img')`, filters by CDN domain regex, and deduplicates by URL. Uses the URL hash as a stable React key (`idFromUrl`).
+On `SCAN_IMAGES` message, the content script iterates `document.querySelectorAll('img')`, filters by CDN domain regex, deduplicates by URL, and classifies each image into a `kind`:
+
+- `emoji` — `img.className` contains `MessageItemEmojiimage` and `emoji`
+- `avatar` — `img.className` contains `commonConversationIconnoDrag` OR URL contains `sc=avatar`
+- `other` — everything else
+
+Uses the URL hash as a stable React key (`idFromUrl`). The side panel `FilterBar` lets users filter the grid by `kind`.
 
 ### Image display
 

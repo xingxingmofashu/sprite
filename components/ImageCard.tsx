@@ -6,14 +6,14 @@ import {
   AttachmentAction,
 } from '@/components/ui/attachment';
 import { Maximize2, Download } from 'lucide-react';
-import type { EmojiInfo } from '@/types';
+import type { ImageInfo } from '@/types';
 
 interface ImageCardProps {
-  emoji: EmojiInfo;
+  emoji: ImageInfo;
   selected: boolean;
   onToggle: (id: string) => void;
-  onDownload: (emoji: EmojiInfo) => void;
-  onPreview: (emoji: EmojiInfo) => void;
+  onDownload: (emoji: ImageInfo) => void;
+  onPreview: (emoji: ImageInfo) => void;
 }
 
 export function ImageCard({ emoji, selected, onToggle, onDownload, onPreview }: ImageCardProps) {

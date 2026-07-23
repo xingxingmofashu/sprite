@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { EmojiInfo } from '@/types';
+import type { ImageInfo } from '@/types';
 
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
 interface UseImageScannerReturn {
-  emojis: EmojiInfo[];
+  emojis: ImageInfo[];
   selectedIds: Set<string>;
   status: Status;
   errorMsg: string;
   handleScan: () => Promise<void>;
   toggleSelect: (id: string) => void;
-  toggleSelectAll: () => void;
-  downloadSingle: (emoji: EmojiInfo) => Promise<void>;
+  toggleSelectAll: (ids?: string[]) => void;
+  downloadSingle: (emoji: ImageInfo) => Promise<void>;
 } /**
  * Hook managing the full emoji scanning lifecycle:
  * - Scans current douyin tab for emoji images
@@ -20,7 +20,7 @@ interface UseImageScannerReturn {
  */
 export function useImageScanner(): UseImageScannerReturn {
   const { t } = useI18n();
-  const [emojis, setEmojis] = useState<EmojiInfo[]>([]);
+  const [emojis, setEmojis] = useState<ImageInfo[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -42,8 +42,8 @@ export function useImageScanner(): UseImageScannerReturn {
         return;
       }
 
-      const response = await browser.tabs.sendMessage(tab.id, { type: 'SCAN_EMOJIS' });
-      const result = response as { emojis: EmojiInfo[] } | undefined;
+      const response = await browser.tabs.sendMessage(tab.id, { type: 'SCAN_IMAGES' });
+      const result = response as { emojis: ImageInfo[] } | undefined;
 
       if (result?.emojis && result.emojis.length > 0) {
         setEmojis(result.emojis);
@@ -73,15 +73,21 @@ export function useImageScanner(): UseImageScannerReturn {
     });
   }, []);
 
-  const toggleSelectAll = useCallback(() => {
-    setSelectedIds((prev) =>
-      prev.size === emojis.length
-        ? new Set()
-        : new Set(emojis.map((e) => e.id)),
-    );
-  }, [emojis.length]);
+  const toggleSelectAll = useCallback((ids?: string[]) => {
+    const targetIds = ids ?? emojis.map((e) => e.id);
+    setSelectedIds((prev) => {
+      const allTargetSelected = targetIds.length > 0 && targetIds.every((id) => prev.has(id));
+      const next = new Set(prev);
+      if (allTargetSelected) {
+        targetIds.forEach((id) => next.delete(id));
+      } else {
+        targetIds.forEach((id) => next.add(id));
+      }
+      return next;
+    });
+  }, [emojis]);
 
-  const downloadSingle = useCallback(async (emoji: EmojiInfo) => {
+  const downloadSingle = useCallback(async (emoji: ImageInfo) => {
     try {
       await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', emojis: [emoji] });
     } catch (err) {

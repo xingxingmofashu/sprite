@@ -1,7 +1,24 @@
-import type { EmojiInfo, ScanResponse } from '@/types';
+import type { ImageInfo, ImageKind, ScanResponse } from '@/types';
 
 /** Douyin CDN domain regex */
-const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo/;
+const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixiguavideo|bytedance|amemv|snssdk|ixigua|toutiao|yzcdn|bdurl|bytegoose|bytetcc|byteoss/;
+
+/** Classify an image into emoji / avatar / other based on class names and URL */
+function classifyImage(img: HTMLImageElement, src: string): ImageKind {
+  const className = img.className;
+
+  // Emoji: class contains "MessageItemEmojiimage" and "emoji"
+  if (className.includes('MessageItemEmojiimage') && className.includes('emoji')) {
+    return 'emoji';
+  }
+
+  // Avatar: class contains "commonConversationIconnoDrag" OR url contains "sc=avatar"
+  if (className.includes('commonConversationIconnoDrag') || src.includes('sc=avatar')) {
+    return 'avatar';
+  }
+
+  return 'other';
+}
 
 // ============ Scan ============
 
@@ -15,8 +32,8 @@ function idFromUrl(url: string): string {
 }
 
 /** Scan DOM <img> elements for CDN-hosted images */
-function scanForEmojis(): EmojiInfo[] {
-  const results: EmojiInfo[] = [];
+function scanForEmojis(): ImageInfo[] {
+  const results: ImageInfo[] = [];
   const seen = new Set<string>();
   const images = document.querySelectorAll('img');
 
@@ -36,6 +53,7 @@ function scanForEmojis(): EmojiInfo[] {
       width,
       height,
       id: idFromUrl(src),
+      kind: classifyImage(img, src),
     });
   });
 
@@ -46,7 +64,7 @@ export default defineContentScript({
   matches: ['*://*.douyin.com/*'],
   main() {
     browser.runtime.onMessage.addListener((message: { type: string }, _sender) => {
-      if (message.type === 'SCAN_EMOJIS') {
+      if (message.type === 'SCAN_IMAGES') {
         const emojis = scanForEmojis();
         return Promise.resolve<ScanResponse>({ emojis });
       }

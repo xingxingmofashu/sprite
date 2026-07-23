@@ -71,5 +71,20 @@
   },
   "downloadError": {
     "message": "Download failed. Please try again or refresh the page."
+  },
+  "filterAll": {
+    "message": "All"
+  },
+  "filterEmoji": {
+    "message": "Emoji"
+  },
+  "filterAvatar": {
+    "message": "Avatar"
+  },
+  "filterOther": {
+    "message": "Other"
+  },
+  "filterEmpty": {
+    "message": "No images in this category"
   }
 }
