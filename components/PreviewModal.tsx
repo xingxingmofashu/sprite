@@ -59,7 +59,7 @@ export function PreviewModal({
   return (
     <Dialog open onOpenChange={(open) => { if (!open) safeClose(); }}>
       <DialogContent
-        className="max-w-[92vw] max-h-[92vh] min-w-80 w-auto h-auto p-0 gap-4 bg-transparent border-0 shadow-none"
+        className="flex flex-col w-[92vw] max-w-[92vw] h-[92vh] max-h-[92vh] p-0 gap-0 bg-transparent border-0 shadow-none"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">{emoji.alt || 'Preview'}</DialogTitle>
@@ -73,26 +73,28 @@ export function PreviewModal({
           }
         />
 
-        {/* Image */}
-        {imgError ? (
-          <div className="flex flex-col items-center justify-center gap-2 max-w-full min-h-[40vh] text-white/60">
-            <ImageOff className="size-10" />
-            <p className="text-sm">{emoji.alt || 'Failed to load image'}</p>
-            <Button variant="ghost" size="sm" className={OVERLAY_BUTTON} onClick={() => setImgError(false)}>
-              Retry
-            </Button>
-          </div>
-        ) : (
-          <img
-            src={emoji.src}
-            className="max-w-full max-h-[calc(92vh-6rem)] object-contain rounded-lg select-none"
-            draggable={false}
-            onError={() => { console.error('Image failed to load:', emoji.src); setImgError(true); }}
-          />
-        )}
+        {/* Fixed-size image area, centered both axes */}
+        <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden px-4 pt-4">
+          {imgError ? (
+            <div className="flex flex-col items-center justify-center gap-2 w-full h-full text-white/60">
+              <ImageOff className="size-10" />
+              <p className="text-sm">{emoji.alt || 'Failed to load image'}</p>
+              <Button variant="ghost" size="sm" className={OVERLAY_BUTTON} onClick={() => setImgError(false)}>
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <img
+              src={emoji.src}
+              className="max-w-full max-h-full object-contain rounded-lg select-none"
+              draggable={false}
+              onError={() => { console.error('Image failed to load:', emoji.src); setImgError(true); }}
+            />
+          )}
+        </div>
 
         {/* Footer with filename + prev/next */}
-        <DialogFooter className="mx-0 mb-0 gap-0 pb-4 bg-transparent border-0 rounded-none sm:justify-center">
+        <DialogFooter className="shrink-0 mx-0 mb-0 gap-0 py-3 px-4 bg-transparent border-0 rounded-none sm:justify-center">
           <div className="flex items-center justify-center gap-4">
             <Button variant="ghost" size="icon" disabled={!hasPrev} onClick={onPrev} className={OVERLAY_BUTTON}>
               <ChevronLeft className="size-5" />
