@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useImageScanner } from '@/utils/useImageScanner';
+import { usePreview } from '@/utils/usePreview';
 import { ImageCard } from '@/components/ImageCard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { FilterBar, type FilterKind } from '@/components/FilterBar';
@@ -17,54 +18,14 @@ function App() {
     downloadSingle,
   } = useImageScanner();
 
-  // Local ZIP download loading state (doesn't affect card re-renders)
-  const [zipping, setZipping] = useState(false);
-
-  // Preview state
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-
-  // Filter state
   const [filter, setFilter] = useState<FilterKind>('all');
 
-  // Counts per kind (plus 'all')
-  const counts = useMemo(() => {
-    const c: Record<FilterKind, number> = { all: emojis.length, emoji: 0, avatar: 0, other: 0 };
-    for (const e of emojis) c[e.kind] += 1;
-    return c;
-  }, [emojis]);
-
-  // Filtered emojis displayed in the grid
   const filteredEmojis = useMemo(
     () => (filter === 'all' ? emojis : emojis.filter((e) => e.kind === (filter as ImageKind))),
     [emojis, filter],
   );
 
-  const previewEmoji = previewIndex !== null ? filteredEmojis[previewIndex] ?? null : null;
-
-  // Reset preview if filtered list shrinks below current index
-  useEffect(() => {
-    if (previewIndex !== null && previewIndex >= filteredEmojis.length) {
-      setPreviewIndex(null);
-    }
-  }, [filteredEmojis.length, previewIndex]);
-
-  // Reset filter if it no longer has any items (keeps UI tidy after rescan)
-  useEffect(() => {
-    if (filter !== 'all' && counts[filter] === 0) setFilter('all');
-  }, [counts, filter]);
-
-  const downloadSelected = useCallback(async () => {
-    if (selectedIds.size === 0) return;
-    setZipping(true);
-    try {
-      const selected = emojis.filter((e) => selectedIds.has(e.id));
-      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
-    } catch (err) {
-      console.error('Batch download failed:', err);
-      alert(t('downloadError'));
-    }
-    setZipping(false);
-  }, [emojis, selectedIds, t]);
+  const { previewIndex, previewEmoji, openPreview, closePreview, prev, next } = usePreview(filteredEmojis);
 
   if (status === 'scanning') {
     return <LoadingView />;
@@ -77,18 +38,17 @@ function App() {
   return (
     <div className="w-full h-dvh flex flex-col bg-background select-none">
       <SidePanelHeader total={emojis.length} />
-      <FilterBar counts={counts} filter={filter} onFilterChange={setFilter} />
+      <FilterBar emojis={emojis} filter={filter} onFilterChange={setFilter} />
       <SidePanelToolbar
         total={filteredEmojis.length}
-        selectedCount={selectedIds.size}
+        selectedIds={selectedIds}
+        emojis={emojis}
         allSelected={
           filteredEmojis.length > 0 &&
           filteredEmojis.every((e) => selectedIds.has(e.id))
         }
-        downloading={zipping}
         onSelectAll={() => toggleSelectAll(filteredEmojis.map((e) => e.id))}
         onRescan={handleScan}
-        onDownloadZip={downloadSelected}
       />
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
@@ -105,7 +65,7 @@ function App() {
                 selected={selectedIds.has(emoji.id)}
                 onToggle={toggleSelect}
                 onDownload={downloadSingle}
-                onPreview={() => setPreviewIndex(index)}
+                onPreview={() => openPreview(index)}
               />
             ))}
           </div>
@@ -116,7 +76,6 @@ function App() {
         <p className="text-[11px] text-muted-foreground/50">{t('rightClickHint')}</p>
       </div>
 
-      {/* Image preview modal */}
       {previewEmoji && (
         <ErrorBoundary fallback={
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -127,9 +86,9 @@ function App() {
             emoji={previewEmoji}
             index={previewIndex!}
             total={filteredEmojis.length}
-            onPrev={() => setPreviewIndex((i) => i! - 1)}
-            onNext={() => setPreviewIndex((i) => i! + 1)}
-            onClose={() => setPreviewIndex(null)}
+            onPrev={prev}
+            onNext={next}
+            onClose={closePreview}
           />
         </ErrorBoundary>
       )}

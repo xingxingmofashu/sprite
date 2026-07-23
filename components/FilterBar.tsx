@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import type { ImageKind } from '@/types';
+import type { ImageInfo, ImageKind } from '@/types';
 
 export type FilterKind = ImageKind | 'all';
 
 interface FilterBarProps {
-  counts: Record<FilterKind, number>;
+  emojis: ImageInfo[];
   filter: FilterKind;
   onFilterChange: (filter: FilterKind) => void;
 }
@@ -16,8 +17,14 @@ const FILTERS: { key: FilterKind; labelKey: string }[] = [
   { key: 'other', labelKey: 'filterOther' },
 ];
 
-export function FilterBar({ counts, filter, onFilterChange }: FilterBarProps) {
+export function FilterBar({ emojis, filter, onFilterChange }: FilterBarProps) {
   const { t } = useI18n();
+
+  const counts = useMemo(() => {
+    const c: Record<FilterKind, number> = { all: emojis.length, emoji: 0, avatar: 0, other: 0 };
+    for (const e of emojis) c[e.kind] += 1;
+    return c;
+  }, [emojis]);
 
   return (
     <div className="shrink-0 flex items-center gap-1 px-4 py-2 border-b border-border overflow-x-auto">
