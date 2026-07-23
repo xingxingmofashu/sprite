@@ -17,8 +17,8 @@
 
 <table>
   <tr>
-    <td align="center"><img src=".github/assets/home.png" alt="Side Panel"></td>
-    <td align="center"><img src=".github/assets/preview.png" alt="Preview Modal"></td>
+    <td align="center"><img src=".github/assets/home.png" alt="Side Panel" width="100%"></td>
+    <td align="center"><img src=".github/assets/preview.png" alt="Preview Modal" width="100%"></td>
   </tr>
   <tr>
     <td align="center">Side Panel</td>

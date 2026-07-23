@@ -17,8 +17,8 @@
 
 <table>
   <tr>
-    <td align="center"><img src=".github/assets/home.png" alt="侧边面板"></td>
-    <td align="center"><img src=".github/assets/preview.png" alt="预览弹窗"></td>
+    <td align="center"><img src=".github/assets/home.png" alt="侧边面板" width="100%"></td>
+    <td align="center"><img src=".github/assets/preview.png" alt="预览弹窗" width="100%"></td>
   </tr>
   <tr>
     <td align="center">侧边面板</td>
