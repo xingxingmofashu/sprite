@@ -12,7 +12,7 @@ import type { ImageInfo } from '@/types';
 
 const OVERLAY_BUTTON = 'rounded-full bg-white/20 hover:bg-white/35 text-white';
 
-interface PreviewModalProps {
+interface ImagePreviewProps {
   emoji: ImageInfo;
   index: number;
   total: number;
@@ -21,14 +21,14 @@ interface PreviewModalProps {
   onClose: () => void;
 }
 
-export function PreviewModal({
+export function ImagePreview({
   emoji,
   index,
   total,
   onPrev,
   onNext,
   onClose,
-}: PreviewModalProps) {
+}: ImagePreviewProps) {
   const hasPrev = index > 0;
   const hasNext = index < total - 1;
 

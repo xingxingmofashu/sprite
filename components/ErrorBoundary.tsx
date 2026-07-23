@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error) {
-    console.error('PreviewModal error boundary caught:', error);
+    console.error('ImagePreview error boundary caught:', error);
   }
 
   render() {

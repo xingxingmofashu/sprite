@@ -33,7 +33,7 @@ Files in these directories are auto-imported by WXT (no explicit import statemen
 - `types/` — `ImageInfo`, `ImageKind`, `ScanResponse`
 - `hooks/` — `useI18n()`, `useImageScanner()`, `usePreview()`
 - `lib/utils.ts` — `cn()`, `throttledMap()`
-- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `ImageTabs`, `PreviewModal`, `LoadingView`, `EmptyView`
+- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `ImageTabs`, `ImagePreview`, `LoadingView`, `EmptyView`
 
 ### Message flow
 

@@ -68,7 +68,7 @@ function App() {
             <p className="text-white text-sm">Preview unavailable</p>
           </div>
         }>
-          <PreviewModal
+          <ImagePreview
             emoji={previewEmoji}
             index={previewIndex!}
             total={filteredEmojis.length}
