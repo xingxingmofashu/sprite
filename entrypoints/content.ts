@@ -7,13 +7,13 @@ const CDN_PATTERN = /douyincdn|douyinpic|pstatp|bytecdn|byteimg|toutiaoimg|ixigu
 function classifyImage(img: HTMLImageElement, src: string): ImageKind {
   const className = img.className;
 
-  // Emoji: class contains "MessageItemEmojiimage" and "emoji"
-  if (className.includes('MessageItemEmojiimage') && className.includes('emoji')) {
+  // Emoji: class contains "MessageItemEmojiimage" (emoji-specific marker, case-insensitive)
+  if (/MessageItemEmojiimage/i.test(className)) {
     return 'emoji';
   }
 
   // Avatar: class contains "commonConversationIconnoDrag" OR url contains "sc=avatar"
-  if (className.includes('commonConversationIconnoDrag') || src.includes('sc=avatar')) {
+  if (className.toLowerCase().includes('commonconversationiconnodrag') || src.includes('sc=avatar')) {
     return 'avatar';
   }
 

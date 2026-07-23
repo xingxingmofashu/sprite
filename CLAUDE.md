@@ -48,7 +48,7 @@ Files in these directories are auto-imported by WXT (no explicit import statemen
 
 On `SCAN_IMAGES` message, the content script iterates `document.querySelectorAll('img')`, filters by CDN domain regex, deduplicates by URL, and classifies each image into a `kind`:
 
-- `emoji` — `img.className` contains `MessageItemEmojiimage` and `emoji`
+- `emoji` — `img.className` contains `MessageItemEmojiimage` (case-insensitive)
 - `avatar` — `img.className` contains `commonConversationIconnoDrag` OR URL contains `sc=avatar`
 - `other` — everything else
 
