@@ -13,6 +13,19 @@
   <a href="README.zh.md">简体中文</a>
 </p>
 
+## 截图
+
+<table>
+  <tr>
+    <td align="center"><img src=".github/assets/home.png" alt="侧边面板"></td>
+    <td align="center"><img src=".github/assets/preview.png" alt="预览弹窗"></td>
+  </tr>
+  <tr>
+    <td align="center">侧边面板</td>
+    <td align="center">预览弹窗</td>
+  </tr>
+</table>
+
 ## 功能
 
 - **侧边面板浏览** — 点击扩展图标打开侧边面板，展示当前聊天中所有表情包和贴图

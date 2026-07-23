@@ -15,13 +15,16 @@
 
 ## Screenshots
 
-### Side Panel
-
-![Side Panel](.github/assets/home.png)
-
-### Preview Modal
-
-![Preview Modal](.github/assets/preview.png)
+<table>
+  <tr>
+    <td align="center"><img src=".github/assets/home.png" alt="Side Panel"></td>
+    <td align="center"><img src=".github/assets/preview.png" alt="Preview Modal"></td>
+  </tr>
+  <tr>
+    <td align="center">Side Panel</td>
+    <td align="center">Preview Modal</td>
+  </tr>
+</table>
 
 ## Features
 
