@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useImageScanner } from '@/utils/useImageScanner';
-import { usePreview } from '@/utils/usePreview';
+import { useImageScanner } from '@/hooks/useImageScanner';
+import { usePreview } from '@/hooks/usePreview';
 import { ImageCard } from '@/components/ImageCard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { FilterBar, type FilterKind } from '@/components/FilterBar';
