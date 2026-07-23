@@ -4,7 +4,7 @@ import type { ImageInfo } from '@/types';
 interface UsePreviewReturn {
   previewIndex: number | null;
   previewEmoji: ImageInfo | null;
-  openPreview: (index: number) => void;
+  openPreview: (emoji: ImageInfo, index: number) => void;
   closePreview: () => void;
   prev: () => void;
   next: () => void;
@@ -22,7 +22,7 @@ export function usePreview(list: ImageInfo[]): UsePreviewReturn {
     }
   }, [list.length, previewIndex]);
 
-  const openPreview = useCallback((index: number) => setPreviewIndex(index), []);
+  const openPreview = useCallback((_emoji: ImageInfo, index: number) => setPreviewIndex(index), []);
   const closePreview = useCallback(() => setPreviewIndex(null), []);
   const prev = useCallback(() => setPreviewIndex((i) => (i !== null ? i - 1 : i)), []);
   const next = useCallback(() => setPreviewIndex((i) => (i !== null ? i + 1 : i)), []);

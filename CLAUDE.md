@@ -31,8 +31,9 @@ pnpm postinstall      # Run `wxt prepare` after dependency changes
 Files in these directories are auto-imported by WXT (no explicit import statement needed):
 
 - `types/` — `ImageInfo`, `ImageKind`, `ScanResponse`
-- `utils/` — `useI18n()`, `useImageScanner()`, `async.ts` (throttledMap)
-- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `FilterBar`, `PreviewModal`, `LoadingView`, `EmptyView`
+- `hooks/` — `useI18n()`, `useImageScanner()`, `usePreview()`
+- `lib/utils.ts` — `cn()`, `throttledMap()`
+- `components/` — `ImageCard`, `SidePanelHeader`, `SidePanelToolbar`, `ImageTabs`, `PreviewModal`, `LoadingView`, `EmptyView`
 
 ### Message flow
 
@@ -52,7 +53,7 @@ On `SCAN_IMAGES` message, the content script iterates `document.querySelectorAll
 - `avatar` — `img.className` contains `commonConversationIconnoDrag` OR URL contains `sc=avatar`
 - `other` — everything else
 
-Uses the URL hash as a stable React key (`idFromUrl`). The side panel `FilterBar` lets users filter the grid by `kind`.
+Uses `@emotion/hash` for the React key (`id`). The side panel `ImageTabs` lets users filter the grid by `kind` via a Tabs component.
 
 ### Image display
 
