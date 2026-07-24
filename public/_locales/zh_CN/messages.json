@@ -11,18 +11,6 @@
   "scanning": {
     "message": "正在扫描表情包..."
   },
-  "scanError": {
-    "message": "扫描失败，请确认以下事项："
-  },
-  "scanErrorHint1": {
-    "message": "当前页面是抖音网页版 (douyin.com)"
-  },
-  "scanErrorHint2": {
-    "message": "已打开聊天对话框"
-  },
-  "scanErrorHint3": {
-    "message": "如果问题持续，请刷新页面后重试"
-  },
   "noEmojisFound": {
     "message": "当前页面没有发现表情包"
   },

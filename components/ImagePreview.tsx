@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,8 @@ import type { ImageInfo } from '@/types';
 
 const OVERLAY_BUTTON = 'rounded-full bg-white/20 hover:bg-white/35 text-white';
 
-interface PreviewModalProps {
-  emoji: ImageInfo;
+interface ImagePreviewProps {
+  image: ImageInfo;
   index: number;
   total: number;
   onPrev: () => void;
@@ -21,48 +21,36 @@ interface PreviewModalProps {
   onClose: () => void;
 }
 
-export function PreviewModal({
-  emoji,
+export function ImagePreview({
+  image,
   index,
   total,
   onPrev,
   onNext,
   onClose,
-}: PreviewModalProps) {
+}: ImagePreviewProps) {
   const hasPrev = index > 0;
   const hasNext = index < total - 1;
 
   const [imgError, setImgError] = useState(false);
-  useEffect(() => { setImgError(false); }, [emoji.src]);
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      try {
-        if (e.key === 'ArrowLeft' && hasPrev) onPrev();
-        if (e.key === 'ArrowRight' && hasNext) onNext();
-      } catch (err) {
-        console.error('Preview navigation failed:', err);
-      }
-    },
-    [onPrev, onNext, hasPrev, hasNext],
-  );
+  useEffect(() => { setImgError(false); }, [image.src]);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && hasPrev) onPrev();
+      if (e.key === 'ArrowRight' && hasNext) onNext();
+    };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  const safeClose = useCallback(() => {
-    try { onClose(); } catch (err) { console.error('Failed to close preview:', err); }
-  }, [onClose]);
+  }, [onPrev, onNext, hasPrev, hasNext]);
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) safeClose(); }}>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
         className="flex flex-col w-[92vw] max-w-[92vw] h-[92vh] max-h-[92vh] p-0 gap-0 bg-transparent border-0 shadow-none"
         showCloseButton={false}
       >
-        <DialogTitle className="sr-only">{emoji.alt || 'Preview'}</DialogTitle>
+        <DialogTitle className="sr-only">{image.alt || 'Preview'}</DialogTitle>
 
         {/* Close button — top right */}
         <DialogClose
@@ -78,17 +66,17 @@ export function PreviewModal({
           {imgError ? (
             <div className="flex flex-col items-center justify-center gap-2 w-full h-full text-white/60">
               <ImageOff className="size-10" />
-              <p className="text-sm">{emoji.alt || 'Failed to load image'}</p>
+              <p className="text-sm">{image.alt || 'Failed to load image'}</p>
               <Button variant="ghost" size="sm" className={OVERLAY_BUTTON} onClick={() => setImgError(false)}>
                 Retry
               </Button>
             </div>
           ) : (
             <img
-              src={emoji.src}
+              src={image.src}
               className="max-w-full max-h-full object-contain rounded-lg select-none"
               draggable={false}
-              onError={() => { console.error('Image failed to load:', emoji.src); setImgError(true); }}
+              onError={() => { console.error('Image failed to load:', image.src); setImgError(true); }}
             />
           )}
         </div>
@@ -100,7 +88,7 @@ export function PreviewModal({
               <ChevronLeft className="size-5" />
             </Button>
             <span className="text-white/50 text-xs max-w-[60vw] truncate">
-              {emoji.alt || emoji.src.split('/').pop()}
+              {image.alt || image.src.split('/').pop()}
             </span>
             <Button variant="ghost" size="icon" disabled={!hasNext} onClick={onNext} className={OVERLAY_BUTTON}>
               <ChevronRight className="size-5" />

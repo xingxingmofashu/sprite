@@ -10,5 +10,5 @@ export interface ImageInfo {
 }
 
 export interface ScanResponse {
-  emojis: ImageInfo[];
+  images: ImageInfo[];
 }

@@ -1,27 +1,43 @@
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import type { ImageInfo } from '@/types';
 
 interface SidePanelToolbarProps {
   total: number;
-  selectedCount: number;
+  selectedIds: Set<string>;
+  images: ImageInfo[];
   allSelected: boolean;
-  downloading: boolean;
   onSelectAll: () => void;
   onRescan: () => void;
-  onDownloadZip: () => void;
 }
 
 /** Toolbar: select-all, count, and action buttons */
 export function SidePanelToolbar({
   total,
-  selectedCount,
+  selectedIds,
+  images,
   allSelected,
-  downloading,
   onSelectAll,
   onRescan,
-  onDownloadZip,
 }: SidePanelToolbarProps) {
   const { t } = useI18n();
+  const [zipping, setZipping] = useState(false);
+
+  const selectedCount = selectedIds.size;
+
+  const download = useCallback(async () => {
+    if (selectedIds.size === 0) return;
+    setZipping(true);
+    try {
+      const selected = images.filter((e) => selectedIds.has(e.id));
+      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', images: selected });
+    } catch (err) {
+      console.error('Batch download failed:', err);
+      alert(t('downloadError'));
+    }
+    setZipping(false);
+  }, [images, selectedIds, t]);
 
   return (
     <div className="shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-border">
@@ -40,11 +56,11 @@ export function SidePanelToolbar({
         </Button>
         <Button
           size="sm"
-          onClick={onDownloadZip}
-          disabled={selectedCount === 0 || downloading}
+          onClick={download}
+          disabled={selectedCount === 0 || zipping}
           className="disabled:opacity-50"
         >
-          {downloading ? t('packing') : t('downloadZip')}
+          {zipping ? t('packing') : t('downloadZip')}
         </Button>
       </div>
     </div>

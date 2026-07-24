@@ -58,19 +58,19 @@ pnpm compile    # TypeScript 类型检查
 
 ## 工作原理
 
-Sprite 扫描抖音聊天页面的 DOM，从已知 CDN 域名中提取表情包/贴图的图片地址。图片通过后台 Service Worker 代理请求（利用 `host_permissions` 绕过 CORS），转为 base64 数据后在侧边面板显示。
+Sprite 扫描抖音聊天页面的 DOM，从已知 CDN 域名中提取表情包/贴图的图片地址。图片在侧边面板中以 `<img src>` 直接加载 —— CDN 域名已写入 `host_permissions`，无需代理或 base64 转换。
 
 | 入口 | 作用 |
 |---|---|
-| `sidepanel/` | 主界面 — 包含表情网格、工具栏和预览弹窗的 React 应用 |
-| `background.ts` | Service Worker — 右键菜单、图片代理、ZIP 下载 |
+| `sidepanel/` | 主界面 — 包含图片网格、筛选栏、工具栏和预览弹窗的 React 应用 |
+| `background.ts` | Service Worker — 右键菜单、单张/ZIP 下载 |
 | `content.ts` | 内容脚本 — 在 `*.douyin.com/*` 页面进行 DOM 扫描 |
 
 ## 技术栈
 
 - **WXT** v0.20 — 基于 Vite 的浏览器扩展框架
 - **React** 19 + TypeScript
-- **Tailwind CSS** v4 + shadcn/ui (Card, Dialog, Empty, Button, Checkbox)
+- **Tailwind CSS** v4 + shadcn/ui (Dialog, Empty, Button, Checkbox, Attachment)
 - **JSZip** — 客户端 ZIP 打包
 - **Lucide** — 图标库
 
