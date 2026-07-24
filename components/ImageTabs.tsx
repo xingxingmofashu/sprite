@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ImageCard } from '@/components/ImageCard';
 import type { ImageInfo, ImageKind } from '@/types';
@@ -12,7 +12,7 @@ interface ImageTabsProps {
   selectedIds: Set<string>;
   onToggle: (id: string) => void;
   onDownload: (emoji: ImageInfo) => void;
-  onPreview: (emoji: ImageInfo, index: number) => void;
+  onPreview: (index: number) => void;
 }
 
 const TABS: { key: ImageTab; labelKey: string }[] = [
@@ -83,7 +83,7 @@ export function ImageTabs({
                     selected={selectedIds.has(emoji.id)}
                     onToggle={onToggle}
                     onDownload={onDownload}
-                    onPreview={() => onPreview(emoji, index)}
+                    onPreview={() => onPreview(index)}
                   />
                 ))}
               </div>

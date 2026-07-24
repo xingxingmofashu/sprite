@@ -3,7 +3,6 @@ import { useImageScanner } from '@/hooks/useImageScanner';
 import { usePreview } from '@/hooks/usePreview';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ImageTabs, type ImageTab } from '@/components/ImageTabs';
-import type { ImageKind } from '@/types';
 
 function App() {
   const { t } = useI18n();
@@ -20,7 +19,7 @@ function App() {
   const [tab, setTab] = useState<ImageTab>('all');
 
   const filteredEmojis = useMemo(
-    () => (tab === 'all' ? emojis : emojis.filter((e) => e.kind === (tab as ImageKind))),
+    () => (tab === 'all' ? emojis : emojis.filter((e) => e.kind === tab)),
     [emojis, tab],
   );
 

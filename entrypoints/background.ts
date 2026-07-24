@@ -53,7 +53,7 @@ export default defineBackground(() => {
         if (!folder) throw new Error('Failed to create folder inside ZIP');
 
         // Fetch images concurrently with throttledMap
-        const results = await throttledMap(
+        await throttledMap(
           Array.from(message.emojis.entries()),
           async ([i, emoji]) => {
             try {
@@ -65,17 +65,12 @@ export default defineBackground(() => {
               const ct = response.headers.get('Content-Type') || '';
               const ext = ct.split('/').pop()?.split(';')[0] || 'png';
               folder.file(`${i + 1}.${ext}`, blob);
-              return 'ok' as const;
             } catch (err) {
               console.error(`Failed to fetch: ${emoji.src}`, err);
-              return 'fail' as const;
             }
           },
           5, // concurrency
         );
-
-        const successCount = results.filter((r) => r === 'ok').length;
-        const failCount = results.filter((r) => r === 'fail').length;
 
         // Generate download URL — prefer blob URL, fall back to data URL
         let downloadUrl: string;
@@ -96,7 +91,7 @@ export default defineBackground(() => {
         });
 
         if (downloadUrl.startsWith('blob:')) URL.revokeObjectURL(downloadUrl);
-        return { success: true, count: successCount, failCount };
+        return { success: true };
       } catch (err) {
         console.error('ZIP pack failed:', err);
         return { success: false, error: String(err) };
