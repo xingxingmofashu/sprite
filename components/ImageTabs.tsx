@@ -6,12 +6,12 @@ import type { ImageInfo, ImageKind } from '@/types';
 export type ImageTab = ImageKind | 'all';
 
 interface ImageTabsProps {
-  emojis: ImageInfo[];
+  images: ImageInfo[];
   tab: ImageTab;
   onTabChange: (tab: ImageTab) => void;
   selectedIds: Set<string>;
   onToggle: (id: string) => void;
-  onDownload: (emoji: ImageInfo) => void;
+  onDownload: (image: ImageInfo) => void;
   onPreview: (index: number) => void;
 }
 
@@ -23,7 +23,7 @@ const TABS: { key: ImageTab; labelKey: string }[] = [
 ];
 
 export function ImageTabs({
-  emojis,
+  images,
   tab,
   onTabChange,
   selectedIds,
@@ -34,12 +34,12 @@ export function ImageTabs({
   const { t } = useI18n();
 
   const grouped = useMemo(() => {
-    const all = emojis;
-    const emoji = emojis.filter((e) => e.kind === 'emoji');
-    const avatar = emojis.filter((e) => e.kind === 'avatar');
-    const other = emojis.filter((e) => e.kind === 'other');
+    const all = images;
+    const emoji = images.filter((e) => e.kind === 'emoji');
+    const avatar = images.filter((e) => e.kind === 'avatar');
+    const other = images.filter((e) => e.kind === 'other');
     return { all, emoji, avatar, other };
-  }, [emojis]);
+  }, [images]);
 
   return (
     <Tabs
@@ -76,11 +76,11 @@ export function ImageTabs({
               </div>
             ) : (
               <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
-                {list.map((emoji, index) => (
+                {list.map((image, index) => (
                   <ImageCard
-                    key={emoji.id}
-                    emoji={emoji}
-                    selected={selectedIds.has(emoji.id)}
+                    key={image.id}
+                    image={image}
+                    selected={selectedIds.has(image.id)}
                     onToggle={onToggle}
                     onDownload={onDownload}
                     onPreview={() => onPreview(index)}

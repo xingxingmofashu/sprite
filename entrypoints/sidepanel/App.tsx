@@ -7,7 +7,7 @@ import { ImageTabs, type ImageTab } from '@/components/ImageTabs';
 function App() {
   const { t } = useI18n();
   const {
-    emojis,
+    images,
     selectedIds,
     status,
     handleScan,
@@ -18,37 +18,37 @@ function App() {
 
   const [tab, setTab] = useState<ImageTab>('all');
 
-  const filteredEmojis = useMemo(
-    () => (tab === 'all' ? emojis : emojis.filter((e) => e.kind === tab)),
-    [emojis, tab],
+  const filteredImages = useMemo(
+    () => (tab === 'all' ? images : images.filter((e) => e.kind === tab)),
+    [images, tab],
   );
 
-  const { previewIndex, previewEmoji, openPreview, closePreview, prev, next } = usePreview(filteredEmojis);
+  const { previewIndex, previewImage, openPreview, closePreview, prev, next } = usePreview(filteredImages);
 
   if (status === 'scanning') {
     return <LoadingView />;
   }
 
-  if (emojis.length === 0) {
+  if (images.length === 0) {
     return <EmptyView onRetry={handleScan} />;
   }
 
   return (
     <div className="w-full h-dvh flex flex-col bg-background select-none">
-      <SidePanelHeader total={emojis.length} />
+      <SidePanelHeader total={images.length} />
       <SidePanelToolbar
-        total={filteredEmojis.length}
+        total={filteredImages.length}
         selectedIds={selectedIds}
-        emojis={emojis}
+        images={images}
         allSelected={
-          filteredEmojis.length > 0 &&
-          filteredEmojis.every((e) => selectedIds.has(e.id))
+          filteredImages.length > 0 &&
+          filteredImages.every((e) => selectedIds.has(e.id))
         }
-        onSelectAll={() => toggleSelectAll(filteredEmojis.map((e) => e.id))}
+        onSelectAll={() => toggleSelectAll(filteredImages.map((e) => e.id))}
         onRescan={handleScan}
       />
       <ImageTabs
-        emojis={emojis}
+        images={images}
         tab={tab}
         onTabChange={setTab}
         selectedIds={selectedIds}
@@ -61,16 +61,16 @@ function App() {
         <p className="text-[11px] text-muted-foreground/50">{t('rightClickHint')}</p>
       </div>
 
-      {previewEmoji && (
+      {previewImage && (
         <ErrorBoundary fallback={
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <p className="text-white text-sm">Preview unavailable</p>
           </div>
         }>
           <ImagePreview
-            emoji={previewEmoji}
+            image={previewImage}
             index={previewIndex!}
-            total={filteredEmojis.length}
+            total={filteredImages.length}
             onPrev={prev}
             onNext={next}
             onClose={closePreview}

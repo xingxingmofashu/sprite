@@ -19,7 +19,7 @@ export function LoadingView() {
   );
 }
 
-/** Empty state — no emojis found */
+/** Empty state — no images found */
 export function EmptyView({ onRetry }: EmptyViewProps) {
   const { t } = useI18n();
 

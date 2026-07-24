@@ -6,7 +6,7 @@ import type { ImageInfo } from '@/types';
 interface SidePanelToolbarProps {
   total: number;
   selectedIds: Set<string>;
-  emojis: ImageInfo[];
+  images: ImageInfo[];
   allSelected: boolean;
   onSelectAll: () => void;
   onRescan: () => void;
@@ -16,7 +16,7 @@ interface SidePanelToolbarProps {
 export function SidePanelToolbar({
   total,
   selectedIds,
-  emojis,
+  images,
   allSelected,
   onSelectAll,
   onRescan,
@@ -26,18 +26,18 @@ export function SidePanelToolbar({
 
   const selectedCount = selectedIds.size;
 
-  const downloadSelected = useCallback(async () => {
+  const download = useCallback(async () => {
     if (selectedIds.size === 0) return;
     setZipping(true);
     try {
-      const selected = emojis.filter((e) => selectedIds.has(e.id));
-      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', emojis: selected });
+      const selected = images.filter((e) => selectedIds.has(e.id));
+      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', images: selected });
     } catch (err) {
       console.error('Batch download failed:', err);
       alert(t('downloadError'));
     }
     setZipping(false);
-  }, [emojis, selectedIds, t]);
+  }, [images, selectedIds, t]);
 
   return (
     <div className="shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-border">
@@ -56,7 +56,7 @@ export function SidePanelToolbar({
         </Button>
         <Button
           size="sm"
-          onClick={downloadSelected}
+          onClick={download}
           disabled={selectedCount === 0 || zipping}
           className="disabled:opacity-50"
         >

@@ -3,7 +3,7 @@ import type { ImageInfo } from '@/types';
 
 interface UsePreviewReturn {
   previewIndex: number | null;
-  previewEmoji: ImageInfo | null;
+  previewImage: ImageInfo | null;
   openPreview: (index: number) => void;
   closePreview: () => void;
   prev: () => void;
@@ -13,7 +13,7 @@ interface UsePreviewReturn {
 export function usePreview(list: ImageInfo[]): UsePreviewReturn {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
-  const previewEmoji = previewIndex !== null ? list[previewIndex] ?? null : null;
+  const previewImage = previewIndex !== null ? list[previewIndex] ?? null : null;
 
   // Reset preview if the list shrinks below the current index
   useEffect(() => {
@@ -27,5 +27,5 @@ export function usePreview(list: ImageInfo[]): UsePreviewReturn {
   const prev = useCallback(() => setPreviewIndex((i) => (i !== null ? i - 1 : i)), []);
   const next = useCallback(() => setPreviewIndex((i) => (i !== null ? i + 1 : i)), []);
 
-  return { previewIndex, previewEmoji, openPreview, closePreview, prev, next };
+  return { previewIndex, previewImage, openPreview, closePreview, prev, next };
 }

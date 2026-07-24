@@ -5,7 +5,7 @@ export default defineBackground(() => {
 
   browser.runtime.onInstalled.addListener(() => {
     browser.contextMenus.create({
-      id: 'download-emoji',
+      id: 'download-image',
       title: browser.i18n.getMessage('contextMenuTitle'),
       contexts: ['image'],
       documentUrlPatterns: ['*://*.douyin.com/*'],
@@ -13,7 +13,7 @@ export default defineBackground(() => {
   });
 
   browser.contextMenus.onClicked.addListener((info) => {
-    if (info.menuItemId === 'download-emoji' && info.srcUrl) {
+    if (info.menuItemId === 'download-image' && info.srcUrl) {
       browser.downloads.download({
         url: info.srcUrl,
         saveAs: true,
@@ -33,31 +33,31 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener(async (message: {
     type: string;
-    emojis?: Array<{ src: string; alt: string }>;
+    images?: Array<{ src: string; alt: string }>;
   }) => {
-    // DOWNLOAD_SINGLE: download a single emoji image
-    if (message.type === 'DOWNLOAD_SINGLE' && message.emojis?.[0]) {
+    // DOWNLOAD_SINGLE: download a single image
+    if (message.type === 'DOWNLOAD_SINGLE' && message.images?.[0]) {
       await browser.downloads.download({
-        url: message.emojis[0].src,
+        url: message.images[0].src,
         saveAs: true,
       });
       return { success: true };
     }
 
-    // DOWNLOAD_ZIP: batch-download selected emojis as a ZIP archive
-    if (message.type === 'DOWNLOAD_ZIP' && message.emojis && message.emojis.length > 0) {
+    // DOWNLOAD_ZIP: batch-download selected images as a ZIP archive
+    if (message.type === 'DOWNLOAD_ZIP' && message.images && message.images.length > 0) {
       try {
         const { default: JSZip } = await import('jszip');
         const zip = new JSZip();
-        const folder = zip.folder('emojis');
+        const folder = zip.folder('images');
         if (!folder) throw new Error('Failed to create folder inside ZIP');
 
         // Fetch images concurrently with throttledMap
         await throttledMap(
-          Array.from(message.emojis.entries()),
-          async ([i, emoji]) => {
+          Array.from(message.images.entries()),
+          async ([i, image]) => {
             try {
-              const response = await fetch(emoji.src);
+              const response = await fetch(image.src);
               if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
               const blob = await response.blob();
@@ -66,7 +66,7 @@ export default defineBackground(() => {
               const ext = ct.split('/').pop()?.split(';')[0] || 'png';
               folder.file(`${i + 1}.${ext}`, blob);
             } catch (err) {
-              console.error(`Failed to fetch: ${emoji.src}`, err);
+              console.error(`Failed to fetch: ${image.src}`, err);
             }
           },
           5, // concurrency
@@ -86,7 +86,7 @@ export default defineBackground(() => {
         const suffix = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         await browser.downloads.download({
           url: downloadUrl,
-          filename: `douyin-emojis/emoji-pack_${suffix}.zip`,
+          filename: `douyin-images/image-pack_${suffix}.zip`,
           saveAs: true,
         });
 

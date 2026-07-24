@@ -4,24 +4,24 @@ import type { ImageInfo } from '@/types';
 type Status = 'idle' | 'scanning' | 'done' | 'error';
 
 interface UseImageScannerReturn {
-  emojis: ImageInfo[];
+  images: ImageInfo[];
   selectedIds: Set<string>;
   status: Status;
   handleScan: () => Promise<void>;
   toggleSelect: (id: string) => void;
   toggleSelectAll: (ids?: string[]) => void;
-  downloadSingle: (emoji: ImageInfo) => Promise<void>;
+  downloadSingle: (image: ImageInfo) => Promise<void>;
 }
 
 /**
- * Hook managing the full emoji scanning lifecycle:
- * - Scans current douyin tab for emoji images
+ * Hook managing the full image scanning lifecycle:
+ * - Scans current douyin tab for images
  * - Manages selection state
  * - Handles single and batch download
  */
 export function useImageScanner(): UseImageScannerReturn {
   const { t } = useI18n();
-  const [emojis, setEmojis] = useState<ImageInfo[]>([]);
+  const [images, setImages] = useState<ImageInfo[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
 
@@ -35,10 +35,9 @@ export function useImageScanner(): UseImageScannerReturn {
         return;
       }
 
-      const response = await browser.tabs.sendMessage(tab.id, { type: 'SCAN_IMAGES' });
-      const result = response as { emojis: ImageInfo[] } | undefined;
+      const response = await browser.tabs.sendMessage<{ type: string }, { images: ImageInfo[] }>(tab.id, { type: 'SCAN_IMAGES' });
 
-      setEmojis(result?.emojis ?? []);
+      setImages(response?.images ?? []);
       setSelectedIds(new Set());
       setStatus('done');
     } catch (err) {
@@ -59,7 +58,7 @@ export function useImageScanner(): UseImageScannerReturn {
   }, []);
 
   const toggleSelectAll = useCallback((ids?: string[]) => {
-    const targetIds = ids ?? emojis.map((e) => e.id);
+    const targetIds = ids ?? images.map((e) => e.id);
     setSelectedIds((prev) => {
       const allTargetSelected = targetIds.length > 0 && targetIds.every((id) => prev.has(id));
       const next = new Set(prev);
@@ -70,11 +69,11 @@ export function useImageScanner(): UseImageScannerReturn {
       }
       return next;
     });
-  }, [emojis]);
+  }, [images]);
 
-  const downloadSingle = useCallback(async (emoji: ImageInfo) => {
+  const download = useCallback(async (image: ImageInfo) => {
     try {
-      await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', emojis: [emoji] });
+      await browser.runtime.sendMessage({ type: 'DOWNLOAD_SINGLE', images: [image] });
     } catch (err) {
       console.error('Download failed:', err);
       alert(t('downloadError'));
@@ -82,12 +81,12 @@ export function useImageScanner(): UseImageScannerReturn {
   }, [t]);
 
   return {
-    emojis,
+    images,
     selectedIds,
     status,
     handleScan,
     toggleSelect,
     toggleSelectAll,
-    downloadSingle,
+    downloadSingle: download,
   };
 }

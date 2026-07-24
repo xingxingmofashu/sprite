@@ -21,7 +21,7 @@ function classifyImage(img: HTMLImageElement, src: string): ImageKind {
 // ============ Scan ============
 
 /** Scan DOM <img> elements for CDN-hosted images */
-function scanForEmojis(): ImageInfo[] {
+function scanImages(): ImageInfo[] {
   const results: ImageInfo[] = [];
   const seen = new Set<string>();
   const images = document.querySelectorAll('img');
@@ -53,8 +53,8 @@ export default defineContentScript({
   main() {
     browser.runtime.onMessage.addListener((message: { type: string }, _sender) => {
       if (message.type === 'SCAN_IMAGES') {
-        const emojis = scanForEmojis();
-        return Promise.resolve<ScanResponse>({ emojis });
+        const images = scanImages();
+        return Promise.resolve<ScanResponse>({ images });
       }
     });
   },
