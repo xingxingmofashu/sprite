@@ -72,6 +72,24 @@
   "filterOther": {
     "message": "Other"
   },
+  "filterVideo": {
+    "message": "Video"
+  },
+  "mediaImages": {
+    "message": "Images"
+  },
+  "mediaVideos": {
+    "message": "Videos"
+  },
+  "mediaHome": {
+    "message": "Home"
+  },
+  "homeTitle": {
+    "message": "Douyin Media Downloader"
+  },
+  "homeSubtitle": {
+    "message": "Scan the current chat page to discover and download images and videos."
+  },
   "filterEmpty": {
     "message": "No images in this category"
   }

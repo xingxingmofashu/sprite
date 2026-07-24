@@ -1,48 +1,39 @@
 import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { ImageInfo } from '@/types';
 
 interface SidePanelToolbarProps {
-  total: number;
-  selectedIds: Set<string>;
-  images: ImageInfo[];
+  selectedCount: number;
+  totalCount: number;
   allSelected: boolean;
   onSelectAll: () => void;
   onRescan: () => void;
+  onDownloadZip: () => Promise<void>;
 }
 
 /** Toolbar: select-all, count, and action buttons */
 export function SidePanelToolbar({
-  total,
-  selectedIds,
-  images,
+  selectedCount,
+  totalCount,
   allSelected,
   onSelectAll,
   onRescan,
+  onDownloadZip,
 }: SidePanelToolbarProps) {
   const { t } = useI18n();
   const [zipping, setZipping] = useState(false);
 
-  const selectedCount = selectedIds.size;
-
   const download = useCallback(async () => {
-    if (selectedIds.size === 0) return;
+    if (selectedCount === 0) return;
     setZipping(true);
-    try {
-      const selected = images.filter((e) => selectedIds.has(e.id));
-      await browser.runtime.sendMessage({ type: 'DOWNLOAD_ZIP', images: selected });
-    } catch (err) {
-      console.error('Batch download failed:', err);
-      alert(t('downloadError'));
-    }
+    await onDownloadZip();
     setZipping(false);
-  }, [images, selectedIds, t]);
+  }, [selectedCount, onDownloadZip]);
 
   return (
-    <div className="shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-border">
+    <div className="shrink-0 flex items-center gap-2 px-4 py-2 border-b border-border">
       <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer select-none">
-        <Checkbox checked={allSelected && total > 0} onCheckedChange={onSelectAll} className="size-3.5" />
+        <Checkbox checked={allSelected && totalCount > 0} onCheckedChange={onSelectAll} className="size-3.5" />
         <span>{t('selectAll')}</span>
       </label>
 

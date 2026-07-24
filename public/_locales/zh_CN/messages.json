@@ -72,6 +72,24 @@
   "filterOther": {
     "message": "其他"
   },
+  "filterVideo": {
+    "message": "视频"
+  },
+  "mediaImages": {
+    "message": "图片"
+  },
+  "mediaVideos": {
+    "message": "视频"
+  },
+  "mediaHome": {
+    "message": "首页"
+  },
+  "homeTitle": {
+    "message": "抖音媒体下载器"
+  },
+  "homeSubtitle": {
+    "message": "扫描当前聊天页面，发现并下载图片和视频。"
+  },
   "filterEmpty": {
     "message": "该分类下没有图片"
   }
