@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.2.1 (2026-07-24)
+
+### Changes
+- Rename `emoji`/`emojis` to `image`/`images` throughout the codebase to align with the general-purpose `ImageInfo` model (props, state, message payloads, ZIP folder/save path)
+- Rename `FilterBar` component → `ImageTabs`; rewrite to use shadcn `Tabs`/`TabsList`/`TabsTrigger`/`TabsContent`, with the image grid now rendered per-tab inside `TabsContent`
+- Rename `PreviewModal` → `ImagePreview`; `PreviewModalProps` → `ImagePreviewProps`
+- Move hooks from `utils/` to a dedicated `hooks/` directory; `throttledMap` moved to `lib/utils.ts`
+- Move `zipping` state, `downloadSelected` logic, and per-kind `counts` into their owning components (`SidePanelToolbar`, `FilterBar`); extract `usePreview` hook
+- Replace hand-rolled `idFromUrl` hash with `@emotion/hash`
+- Remove dead `errorMsg` state and unused `scanError`/`scanErrorHint1-3` i18n keys
+- Remove unused `components/ui/card.tsx` and unused exports from `attachment.tsx` / `dialog.tsx`
+- Remove dead `successCount`/`failCount` computation in the ZIP download handler
+- Add LICENSE, README screenshots, and centered header with badges + language switcher
+
+---
+
 ## v0.2.0 (2026-07-23)
 
 ### Features
