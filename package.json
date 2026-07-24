@@ -12,7 +12,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "release": "release-it"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -26,10 +27,12 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^11.0.1",
     "@tailwindcss/vite": "^4.3.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@wxt-dev/module-react": "^1.1.5",
+    "release-it": "^20.2.1",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.3",
     "wxt": "^0.20.27"

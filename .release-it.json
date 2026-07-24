@@ -1,0 +1,38 @@
+{
+  "git": {
+    "requireBranch": "main",
+    "requireCleanWorkingDir": false,
+    "commitMessage": "chore: release v${version}",
+    "tagName": "v${version}"
+  },
+  "github": {
+    "release": true,
+    "releaseName": "v${version}",
+    "autoGenerate": true
+  },
+  "hooks": {
+    "before:init": ["pnpm compile", "pnpm build", "pnpm zip", "pnpm zip:firefox"]
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits",
+        "types": [
+          { "type": "feat", "section": "Features" },
+          { "type": "fix", "section": "Fixes" },
+          { "type": "refactor", "section": "Changes" },
+          { "type": "perf", "section": "Performance" },
+          { "type": "docs", "section": "Documentation" },
+          { "type": "chore", "section": "Changes", "hidden": false }
+        ]
+      },
+      "header": "# Changelog",
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "assets": [
+    ".output/sprite-*-chrome.zip",
+    ".output/sprite-*-firefox.zip",
+    ".output/sprite-*-sources.zip"
+  ]
+}

@@ -10,6 +10,8 @@ pnpm build            # Production build to .output/chrome-mv3/
 pnpm compile          # TypeScript type-check (tsc --noEmit)
 pnpm zip              # Package extension for distribution
 pnpm postinstall      # Run `wxt prepare` after dependency changes
+pnpm release          # release-it — bump, build, zip, tag, push, create GitHub Release (uses conventions)
+                      # Run with: GITHUB_TOKEN=$(gh auth token) pnpm release
 ```
 
 ## Architecture
@@ -23,7 +25,7 @@ pnpm postinstall      # Run `wxt prepare` after dependency changes
 | Entrypoint | Type | Purpose |
 |---|---|---|
 | `background.ts` | Service worker | Context menu, ZIP download |
-| `content.ts` | Content script | DOM emoji scanning, runs on `*.douyin.com/*` |
+| `content.ts` | Content script | DOM image scanning, runs on `*.douyin.com/*` |
 | `sidepanel/` | Side panel page | React app displayed when clicking extension icon |
 
 ### Auto-imported directories
