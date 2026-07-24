@@ -1,4 +1,10 @@
+import { DownloadMessage } from '@/types';
 import { throttledMap } from '@/lib/utils';
+
+type BackgroundMessage = {
+  type: DownloadMessage;
+  items: Array<{ src: string }>;
+};
 
 export default defineBackground(() => {
   // ============ Context menu ============
@@ -31,21 +37,18 @@ export default defineBackground(() => {
 
   // ============ Background message handlers ============
 
-  browser.runtime.onMessage.addListener(async (message: {
-    type: string;
-    images?: Array<{ src: string; alt: string }>;
-  }) => {
+  browser.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
     // DOWNLOAD_SINGLE: download a single image
-    if (message.type === 'DOWNLOAD_SINGLE' && message.images?.[0]) {
+    if (message.type === DownloadMessage.Single && message.items[0]) {
       await browser.downloads.download({
-        url: message.images[0].src,
+        url: message.items[0].src,
         saveAs: true,
       });
       return { success: true };
     }
 
-    // DOWNLOAD_ZIP: batch-download selected images as a ZIP archive
-    if (message.type === 'DOWNLOAD_ZIP' && message.images && message.images.length > 0) {
+    // DOWNLOAD_ZIP: batch-download selected items as a ZIP archive
+    if (message.type === DownloadMessage.Zip && message.items.length > 0) {
       try {
         const { default: JSZip } = await import('jszip');
         const zip = new JSZip();
@@ -54,7 +57,7 @@ export default defineBackground(() => {
 
         // Fetch images concurrently with throttledMap
         await throttledMap(
-          Array.from(message.images.entries()),
+          Array.from(message.items.entries()),
           async ([i, image]) => {
             try {
               const response = await fetch(image.src);
